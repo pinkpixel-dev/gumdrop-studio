@@ -29,7 +29,6 @@ export default function App() {
   const [color, setColor] = useState('#ff66cc');
   const [alpha, setAlpha] = useState(1);
   const [accentWidth, setAccentWidth] = useState(1);
-  const [dragStart, setDragStart] = useState(null);
   const [tempPreview, setTempPreview] = useState(null);
   const [curveTemps, setCurveTemps] = useState([]);
   const [history, setHistory] = useState([]);
@@ -42,6 +41,7 @@ export default function App() {
   const centerColRef = useRef(null);
   const drawingRef = useRef(false);
   const activePointerRef = useRef(null);
+  const dragStartRef = useRef(null);
   const [renderScale, setRenderScale] = useState(scale);
 
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function App() {
     drawingRef.current = true;
     capturePointer(e);
     const pos = getGridPos(e);
-    setDragStart(pos);
+    dragStartRef.current = pos;
     if (tool !== 'picker') pushHistory();
 
     if (tool === 'pencil') {
@@ -163,21 +163,25 @@ export default function App() {
     if (!drawingRef.current || activePointerRef.current !== e.pointerId) return;
     const pos = getGridPos(e);
     if (tool === 'pencil' || tool === 'eraser') {
-      const last = dragStart;
-      if (!last) {
-        setDragStart(pos);
-        return;
-      }
+      const last = dragStartRef.current;
+      if (!last) return;
+      if (last.x === pos.x && last.y === pos.y) return;
       const pts = rasterLine(last.x, last.y, pos.x, pos.y);
       applyPixels(pts, tool === 'eraser');
-      setDragStart(pos);
-    } else if (tool === 'line' && dragStart) {
-      setTempPreview(rasterLine(dragStart.x, dragStart.y, pos.x, pos.y));
-    } else if (tool === 'rect' && dragStart) {
-      setTempPreview(fillShape ? fillRect(dragStart.x, dragStart.y, pos.x, pos.y) : rasterRect(dragStart.x, dragStart.y, pos.x, pos.y));
-    } else if (tool === 'circle' && dragStart) {
-      const r = Math.round(Math.hypot(pos.x - dragStart.x, pos.y - dragStart.y));
-      setTempPreview(rasterCircle(dragStart.x, dragStart.y, r));
+      dragStartRef.current = pos;
+    } else if (tool === 'line') {
+      const start = dragStartRef.current;
+      if (!start) return;
+      setTempPreview(rasterLine(start.x, start.y, pos.x, pos.y));
+    } else if (tool === 'rect') {
+      const start = dragStartRef.current;
+      if (!start) return;
+      setTempPreview(fillShape ? fillRect(start.x, start.y, pos.x, pos.y) : rasterRect(start.x, start.y, pos.x, pos.y));
+    } else if (tool === 'circle') {
+      const start = dragStartRef.current;
+      if (!start) return;
+      const r = Math.round(Math.hypot(pos.x - start.x, pos.y - start.y));
+      setTempPreview(rasterCircle(start.x, start.y, r));
     } else if (tool === 'curve') {
       if (curveTemps.length === 1) {
         const s = curveTemps[0];
@@ -209,14 +213,15 @@ export default function App() {
     releasePointer(e);
     drawingRef.current = false;
     activePointerRef.current = null;
-    if (tool === 'line' && dragStart) {
-      applyPixels(rasterLine(dragStart.x, dragStart.y, pos.x, pos.y));
-    } else if (tool === 'rect' && dragStart) {
-      const pts = fillShape ? fillRect(dragStart.x, dragStart.y, pos.x, pos.y) : rasterRect(dragStart.x, dragStart.y, pos.x, pos.y);
+    const start = dragStartRef.current;
+    if (tool === 'line' && start) {
+      applyPixels(rasterLine(start.x, start.y, pos.x, pos.y));
+    } else if (tool === 'rect' && start) {
+      const pts = fillShape ? fillRect(start.x, start.y, pos.x, pos.y) : rasterRect(start.x, start.y, pos.x, pos.y);
       applyPixels(pts);
-    } else if (tool === 'circle' && dragStart) {
-      const r = Math.round(Math.hypot(pos.x - dragStart.x, pos.y - dragStart.y));
-      applyPixels(rasterCircle(dragStart.x, dragStart.y, r));
+    } else if (tool === 'circle' && start) {
+      const r = Math.round(Math.hypot(pos.x - start.x, pos.y - start.y));
+      applyPixels(rasterCircle(start.x, start.y, r));
     } else if (tool === 'curve') {
       if (curveTemps.length === 0) {
         setCurveTemps([{ x: pos.x, y: pos.y }]);
@@ -230,7 +235,7 @@ export default function App() {
       }
     }
     setTempPreview(null);
-    setDragStart(null);
+    dragStartRef.current = null;
   }
 
   function handlePointerCancel(e) {
@@ -239,7 +244,7 @@ export default function App() {
     activePointerRef.current = null;
     releasePointer(e);
     setTempPreview(null);
-    setDragStart(null);
+    dragStartRef.current = null;
   }
 
   function handlePointerLeave(e) {
@@ -249,7 +254,7 @@ export default function App() {
     activePointerRef.current = null;
     releasePointer(e);
     setTempPreview(null);
-    setDragStart(null);
+    dragStartRef.current = null;
   }
 
   function applyPixels(pts, erase = false) {
