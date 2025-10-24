@@ -12,11 +12,11 @@ const Canvas = React.forwardRef(({
   tempPreview,
   tool,
   color,
-  isDrawing,
   handlePointerDown,
   handlePointerMove,
   handlePointerUp,
-  setIsDrawing
+  handlePointerCancel,
+  handlePointerLeave
 }, ref) => {
   const pixCanvasRef = ref || useRef(null);
   const overCanvasRef = useRef(null);
@@ -68,16 +68,18 @@ const Canvas = React.forwardRef(({
   return (
     <main className="flex flex-col items-center gap-3">
       <div
-        className="relative select-none"
+        className="relative select-none touch-none cursor-crosshair"
         style={pixelBoardStyle}
-        onMouseDown={handlePointerDown}
-        onMouseMove={handlePointerMove}
-        onMouseUp={handlePointerUp}
-        onMouseLeave={() => {
-          if (isDrawing) setIsDrawing(false);
-        }}
       >
-        <canvas ref={pixCanvasRef} className="absolute inset-0 rounded-2xl" />
+        <canvas
+          ref={pixCanvasRef}
+          className="absolute inset-0 rounded-2xl touch-none"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+          onPointerLeave={handlePointerLeave}
+        />
         <canvas ref={overCanvasRef} className="absolute inset-0 rounded-2xl pointer-events-none" />
       </div>
       <div className="text-xs opacity-70">

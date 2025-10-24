@@ -7,9 +7,9 @@ import { rasterLine, rasterCircle, rasterRect, fillRect, rasterQuad } from './ut
 import { hexToRGBA, rgbaToHex } from './utils/colors';
 
 export default function App() {
-  const [gridW, setGridW] = useState(32);
-  const [gridH, setGridH] = useState(32);
-  const [scale, setScale] = useState(16);
+  const [gridW, setGridW] = useState(40);
+  const [gridH, setGridH] = useState(40);
+  const [scale, setScale] = useState(40);
   const [showGrid, setShowGrid] = useState(true);
   const [fillShape, setFillShape] = useState(false);
   const [pixels, setPixels] = useState(() => makeEmpty(gridW, gridH));
@@ -29,7 +29,6 @@ export default function App() {
   const [color, setColor] = useState('#ff66cc');
   const [alpha, setAlpha] = useState(1);
   const [accentWidth, setAccentWidth] = useState(1);
-  const [isDrawing, setIsDrawing] = useState(false);
   const [dragStart, setDragStart] = useState(null);
   const [tempPreview, setTempPreview] = useState(null);
   const [curveTemps, setCurveTemps] = useState([]);
@@ -37,8 +36,13 @@ export default function App() {
   const [future, setFuture] = useState([]);
   const [projectName, setProjectName] = useState('My Pixel Pet');
   const [savedList, setSavedList] = useState(() => listProjects());
+  const [darkMode, setDarkMode] = useState(true);
 
   const pixCanvasRef = useRef(null);
+  const centerColRef = useRef(null);
+  const drawingRef = useRef(false);
+  const activePointerRef = useRef(null);
+  const [renderScale, setRenderScale] = useState(scale);
 
   useEffect(() => {
     setPixels(makeEmpty(gridW, gridH));
@@ -47,12 +51,60 @@ export default function App() {
     setFuture([]);
   }, [gridW, gridH]);
 
+  // Auto-fit scale so the middle canvas never pushes toolbars off-screen
+  useEffect(() => {
+    function recompute() {
+      const el = centerColRef.current;
+      const availableW = Math.max(0, el ? el.clientWidth : (window.innerWidth - 720)); // rough fallback for side panels + gaps
+      const maxByW = Math.max(1, Math.floor(availableW / Math.max(1, gridW)));
+      // Optionally also constrain by viewport height (keeps in view vertically)
+      const availableH = Math.max(0, window.innerHeight - 220); // account for padding/header/footer
+      const maxByH = Math.max(1, Math.floor(availableH / Math.max(1, gridH)));
+      const fitted = Math.max(1, Math.min(scale, maxByW, maxByH));
+      setRenderScale(fitted);
+    }
+    recompute();
+    window.addEventListener('resize', recompute);
+    return () => window.removeEventListener('resize', recompute);
+  }, [scale, gridW, gridH]);
+
+  function capturePointer(e) {
+    if (!e?.currentTarget || typeof e.currentTarget.setPointerCapture !== 'function') return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (err) {
+      // Ignore failures (e.g., already captured elsewhere).
+    }
+  }
+
+  function releasePointer(e) {
+    if (!e?.currentTarget || typeof e.currentTarget.releasePointerCapture !== 'function') return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch (err) {
+      // Safe to ignore; pointer might already be released.
+    }
+  }
+
   function getGridPos(e) {
-    const host = pixCanvasRef.current;
-    if (!host) return { x: 0, y: 0 };
-    const rect = host.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / scale);
-    const y = Math.floor((e.clientY - rect.top) / scale);
+    if (!gridW || !gridH) return { x: 0, y: 0 };
+    const target = e?.currentTarget ?? pixCanvasRef.current;
+    if (!target) return { x: 0, y: 0 };
+    const rect = target.getBoundingClientRect();
+    const width = rect.width || gridW * renderScale || 1;
+    const height = rect.height || gridH * renderScale || 1;
+    const cellW = width / gridW;
+    const cellH = height / gridH;
+    let relX = e?.nativeEvent?.offsetX;
+    let relY = e?.nativeEvent?.offsetY;
+    if (!Number.isFinite(relX) || !Number.isFinite(relY)) {
+      relX = e.clientX - rect.left;
+      relY = e.clientY - rect.top;
+    }
+    const rawX = relX / cellW;
+    const rawY = relY / cellH;
+    const x = Math.floor(rawX);
+    const y = Math.floor(rawY);
     return { x: clamp(x, 0, gridW - 1), y: clamp(y, 0, gridH - 1) };
   }
 
@@ -84,11 +136,15 @@ export default function App() {
   }
 
   function handlePointerDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     e.preventDefault();
+    if (activePointerRef.current !== null && activePointerRef.current !== e.pointerId) return;
+    activePointerRef.current = e.pointerId;
+    drawingRef.current = true;
+    capturePointer(e);
     const pos = getGridPos(e);
-    setIsDrawing(true);
     setDragStart(pos);
-    pushHistory();
+    if (tool !== 'picker') pushHistory();
 
     if (tool === 'pencil') {
       applyPixels([pos]);
@@ -104,7 +160,7 @@ export default function App() {
   }
 
   function handlePointerMove(e) {
-    if (!isDrawing) return;
+    if (!drawingRef.current || activePointerRef.current !== e.pointerId) return;
     const pos = getGridPos(e);
     if (tool === 'pencil' || tool === 'eraser') {
       const last = dragStart;
@@ -142,9 +198,17 @@ export default function App() {
   }
 
   function handlePointerUp(e) {
-    if (!isDrawing) return;
-    setIsDrawing(false);
+    if (activePointerRef.current !== e.pointerId) return;
+    if (!drawingRef.current) {
+      releasePointer(e);
+      activePointerRef.current = null;
+      return;
+    }
+    e.preventDefault();
     const pos = getGridPos(e);
+    releasePointer(e);
+    drawingRef.current = false;
+    activePointerRef.current = null;
     if (tool === 'line' && dragStart) {
       applyPixels(rasterLine(dragStart.x, dragStart.y, pos.x, pos.y));
     } else if (tool === 'rect' && dragStart) {
@@ -165,6 +229,25 @@ export default function App() {
         setCurveTemps([]);
       }
     }
+    setTempPreview(null);
+    setDragStart(null);
+  }
+
+  function handlePointerCancel(e) {
+    if (activePointerRef.current !== e.pointerId) return;
+    drawingRef.current = false;
+    activePointerRef.current = null;
+    releasePointer(e);
+    setTempPreview(null);
+    setDragStart(null);
+  }
+
+  function handlePointerLeave(e) {
+    if (!drawingRef.current) return;
+    if (activePointerRef.current !== null && activePointerRef.current !== e.pointerId) return;
+    drawingRef.current = false;
+    activePointerRef.current = null;
+    releasePointer(e);
     setTempPreview(null);
     setDragStart(null);
   }
@@ -323,8 +406,12 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-svh w-full bg-gradient-to-br from-pink-900/40 via-purple-900/40 to-indigo-900/40 text-pink-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[300px_1fr_280px] gap-4">
+    <div className={`min-h-svh w-full p-4 md:p-8 transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50' 
+        : 'bg-gradient-to-br from-slate-100 via-white to-slate-50 text-slate-900'
+    }`}>
+      <div className="mx-auto w-full max-w-[min(100vw-2rem,120rem)] grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)_340px] gap-6">
         <ToolPanel
           tools={tools}
           tool={tool}
@@ -345,24 +432,28 @@ export default function App() {
           setAccentWidth={setAccentWidth}
           undo={undo}
           redo={redo}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
         />
-        <Canvas
-          ref={pixCanvasRef}
-          gridW={gridW}
-          gridH={gridH}
-          scale={scale}
-          showGrid={showGrid}
-          pixels={pixels}
-          overlayPaths={overlayPaths}
-          tempPreview={tempPreview}
-          tool={tool}
-          color={color}
-          isDrawing={isDrawing}
-          handlePointerDown={handlePointerDown}
-          handlePointerMove={handlePointerMove}
-          handlePointerUp={handlePointerUp}
-          setIsDrawing={setIsDrawing}
-        />
+        <div ref={centerColRef} className="min-w-0 overflow-auto flex items-start justify-center px-2">
+          <Canvas
+            ref={pixCanvasRef}
+            gridW={gridW}
+            gridH={gridH}
+            scale={renderScale}
+            showGrid={showGrid}
+            pixels={pixels}
+            overlayPaths={overlayPaths}
+            tempPreview={tempPreview}
+            tool={tool}
+            color={color}
+            handlePointerDown={handlePointerDown}
+            handlePointerMove={handlePointerMove}
+            handlePointerUp={handlePointerUp}
+            handlePointerCancel={handlePointerCancel}
+            handlePointerLeave={handlePointerLeave}
+          />
+        </div>
         <ProjectPanel
           projectName={projectName}
           setProjectName={setProjectName}
@@ -384,6 +475,7 @@ export default function App() {
           setOverlayPaths={setOverlayPaths}
           setHistory={setHistory}
           setFuture={setFuture}
+          darkMode={darkMode}
         />
       </div>
       <footer className="mt-6 text-center text-xs opacity-70">

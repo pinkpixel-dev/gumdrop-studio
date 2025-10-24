@@ -19,11 +19,30 @@ export default function ToolPanel({
   accentWidth,
   setAccentWidth,
   undo,
-  redo
+  redo,
+  darkMode,
+  setDarkMode
 }) {
   return (
-    <aside className="bg-white/8 backdrop-blur rounded-2xl p-4 ring-1 ring-white/10">
-      <h2 className="text-xl font-bold mb-3">🧁 Tools</h2>
+    <aside className={`backdrop-blur rounded-2xl p-4 ring-1 transition-colors ${
+      darkMode 
+        ? 'bg-white/8 ring-white/10' 
+        : 'bg-slate-900/8 ring-slate-300/20'
+    }`}>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xl font-bold">🧁 Tools</h2>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className={`px-3 py-1.5 rounded-lg transition-colors ${
+            darkMode 
+              ? 'bg-white/10 hover:bg-white/15' 
+              : 'bg-slate-900/10 hover:bg-slate-900/15'
+          }`}
+          title="Toggle dark/light mode"
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
+      </div>
       <div className="grid grid-cols-2 gap-2 mb-4">
         {tools.map(t => (
           <button
@@ -33,8 +52,10 @@ export default function ToolPanel({
               setTempPreview(null);
               setCurveTemps([]);
             }}
-            className={`px-3 py-2 rounded-xl border text-left hover:bg-white/10 transition ${
-              tool === t.id ? 'bg-white/15 border-white/30' : 'border-white/10'
+            className={`px-3 py-2 rounded-xl border text-left transition ${
+              darkMode
+                ? `hover:bg-white/10 ${tool === t.id ? 'bg-white/15 border-white/30' : 'border-white/10'}`
+                : `hover:bg-slate-900/10 ${tool === t.id ? 'bg-slate-900/15 border-slate-900/30' : 'border-slate-300/30'}`
             }`}
           >
             {t.label}
@@ -60,7 +81,7 @@ export default function ToolPanel({
           <input type="checkbox" checked={fillShape} onChange={e => setFillShape(e.target.checked)} /> Fill rectangles
         </label>
 
-        <div className="pt-3 border-t border-white/10">
+        <div className={`pt-3 border-t ${darkMode ? 'border-white/10' : 'border-slate-300/20'}`}>
           <p className="text-sm mb-2">🎨 Color</p>
           <div className="flex items-center gap-3">
             <input
@@ -98,11 +119,15 @@ export default function ToolPanel({
           )}
         </div>
 
-        <div className="pt-4 border-t border-white/10 space-y-2">
-          <button onClick={undo} className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15">
+        <div className={`pt-4 border-t space-y-2 ${darkMode ? 'border-white/10' : 'border-slate-300/20'}`}>
+          <button onClick={undo} className={`w-full py-2 rounded-xl transition-colors ${
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+          }`}>
             Undo ⎌
           </button>
-          <button onClick={redo} className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15">
+          <button onClick={redo} className={`w-full py-2 rounded-xl transition-colors ${
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+          }`}>
             Redo ↻
           </button>
         </div>

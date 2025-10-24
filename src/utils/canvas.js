@@ -4,9 +4,10 @@ export function renderPixelsToCanvas(ctx, pixels, w, h, scale) {
   const img = ctx.createImageData(w, h);
   const data = img.data;
   for (let y = 0; y < h; y++) {
+    const row = pixels[y];
     for (let x = 0; x < w; x++) {
       const idx = (y * w + x) * 4;
-      const c = pixels[y][x];
+      const c = row ? row[x] : null;
       if (!c) {
         data[idx + 3] = 0;
         continue;
