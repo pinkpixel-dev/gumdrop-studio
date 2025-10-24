@@ -1,6 +1,8 @@
 # 🧁 Gumdrop Studio
 
-A cute pixel art & accent-drawing app built with React.
+<Insert centered logo here>
+
+A cute pixel art creation app made in React.
 
 ## Features
 
@@ -26,7 +28,7 @@ npm install
 npm run dev
 ```
 
-Opens the app at [http://localhost:3000](http://localhost:3000)
+Opens the app at [http://localhost:1337](http://localhost:1337)
 
 ### Build
 
