@@ -28,9 +28,9 @@ export function renderPixelsToCanvas(ctx, pixels, w, h, scale) {
   ctx.drawImage(off, 0, 0, w, h, 0, 0, w * scale, h * scale);
 }
 
-export function drawGrid(ctx, w, h, s) {
+export function drawGrid(ctx, w, h, s, color = 'rgba(255,255,255,0.12)') {
   ctx.save();
-  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.strokeStyle = color;
   ctx.lineWidth = 1;
   for (let x = 0; x <= w; x++) {
     ctx.beginPath();

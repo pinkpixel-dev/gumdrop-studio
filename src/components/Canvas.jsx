@@ -7,6 +7,7 @@ const Canvas = React.forwardRef(({
   gridH,
   scale,
   showGrid,
+  gridColor,
   pixels,
   overlayPaths,
   tempPreview,
@@ -28,8 +29,8 @@ const Canvas = React.forwardRef(({
     canvas.height = gridH * scale;
     const ctx = canvas.getContext('2d');
     renderPixelsToCanvas(ctx, pixels, gridW, gridH, scale);
-    if (showGrid) drawGrid(ctx, gridW, gridH, scale);
-  }, [pixels, gridW, gridH, scale, showGrid]);
+    if (showGrid) drawGrid(ctx, gridW, gridH, scale, gridColor);
+  }, [pixels, gridW, gridH, scale, showGrid, gridColor]);
 
   useEffect(() => {
     const canvas = overCanvasRef.current;

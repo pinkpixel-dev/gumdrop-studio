@@ -1,6 +1,6 @@
 # 🧁 Gumdrop Studio — Project Overview
 
-**Last Updated:** October 24, 2025 at 3:33 PM ET  
+**Last Updated:** October 24, 2025 at 5:20 PM ET  
 **Version:** 1.0.0  
 **Status:** Production Ready ✨
 
@@ -80,6 +80,7 @@ gumdrop-studio/
 
 | Tool | Description | Implementation |
 |------|-------------|----------------|
+| **Pixel Stamp** ⬛ | Precise single-pixel placement (default tool) | Uses shape preview flow for single cell commits |
 | **Pencil** 🖊️ | Freehand pixel drawing | Direct pixel modification |
 | **Eraser** 🧽 | Remove pixels | Sets pixels to `null` |
 | **Line** 📏 | Straight lines | Bresenham's algorithm |
@@ -100,6 +101,8 @@ gumdrop-studio/
 
 - **Adjustable Zoom:** 4x to 40x scale (default 16x)
 - **Grid Overlay:** Toggle-able pixel grid
+- **Theme-Aware Grid:** Grid stroke color adapts to light/dark palettes for consistent visibility
+- **Softer Light Theme:** Warm cream gradient tones reduce glare and keep panels legible
 - **Dual Layers:**
   - **Pixel Layer:** 2D array of RGBA values (blocky, crisp edges)
   - **Overlay Layer:** Vector paths for smooth thin lines (1-6px width)
@@ -152,6 +155,7 @@ setPixels(prev => {
   return copy;
 });
 ```
+Pointer tracking for tools such as Pixel Stamp and Pencil relies on `useRef` (`dragStartRef`) so cursor updates don't wait for React renders, eliminating streak artifacts when switching cells quickly.
 
 ### Rendering System
 

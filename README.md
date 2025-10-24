@@ -1,6 +1,8 @@
 <div align="center">
 
-![Gumdrop Studio](src/assets/logo.png)
+<p align="center">
+    <img src="src/assets/logo.png" alt="Gumdrop Studio" width="300">
+</p>
 
 # 🧁 Gumdrop Studio
 
@@ -22,7 +24,7 @@
 ## ✨ Features
 
 ### 🎨 Dual-Layer Canvas System
-The **killer feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then add fine details like whiskers, smiles, or highlights on a smooth vector overlay layer.
+The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then add fine details like whiskers, smiles, or highlights on a smooth vector overlay layer.
 
 - **Pixel Layer**: Crisp, blocky RGBA pixel array (perfect for sprites)
 - **Overlay Layer**: Anti-aliased vector paths for thin accent lines (1-6px)
@@ -31,6 +33,7 @@ The **killer feature** of Gumdrop Studio! Draw blocky pixel art on one layer, th
 
 | Tool | Description |
 |------|-------------|
+| ⬛ **Pixel Stamp** | Place a single pixel with live preview (default) |
 | 🖊️ **Pencil** | Freehand pixel drawing |
 | 🧽 **Eraser** | Remove pixels |
 | 📏 **Line** | Straight lines with Bresenham algorithm |
@@ -52,6 +55,8 @@ The **killer feature** of Gumdrop Studio! Draw blocky pixel art on one layer, th
 - **Adjustable Zoom**: 4x to 40x magnification (default 16x)
 - **Grid Overlay**: Toggle-able pixel grid for precise alignment
 - **Flexible Sizes**: Create canvases from 4×4 to 256×256 pixels
+- **Theme-Aware Grid**: Grid lines automatically adjust for visibility in light and dark mode
+- **Softer Light Theme**: Warm cream gradient replaces bright white to reduce glare
 - **Undo/Redo**: Full history management with unlimited steps
 
 ### 💾 Project Management
@@ -106,7 +111,7 @@ npm run preview
 
 ## 🎯 Usage
 
-1. **Select a tool** from the left panel (Pencil, Line, Circle, etc.)
+1. **Select a tool** from the left panel (Pixel Stamp is selected by default, switch to Pencil, Line, Circle, etc. as needed)
 2. **Choose a color** using the color wheel or hex input
 3. **Draw on the canvas** with mouse or touch
 4. **Use Accent Pen** for fine details like whiskers or highlights

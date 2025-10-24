@@ -44,6 +44,7 @@ export default function App() {
   const activePointerRef = useRef(null);
   const dragStartRef = useRef(null);
   const [renderScale, setRenderScale] = useState(scale);
+  const gridColor = darkMode ? 'rgba(255,255,255,0.22)' : 'rgba(60,60,60,0.2)';
 
   useEffect(() => {
     setPixels(makeEmpty(gridW, gridH));
@@ -420,8 +421,8 @@ export default function App() {
   return (
     <div className={`min-h-svh w-full p-4 md:p-8 transition-colors duration-300 ${
       darkMode 
-        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50' 
-        : 'bg-gradient-to-br from-slate-100 via-white to-slate-50 text-slate-900'
+        ? 'bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50' 
+        : 'bg-linear-to-br from-[#f6f1e5] via-[#fbf7ef] to-[#f1ebe0] text-slate-900'
     }`}>
       <div className="mx-auto w-full max-w-[min(100vw-2rem,120rem)] grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)_340px] gap-6">
         <ToolPanel
@@ -454,6 +455,7 @@ export default function App() {
             gridH={gridH}
             scale={renderScale}
             showGrid={showGrid}
+            gridColor={gridColor}
             pixels={pixels}
             overlayPaths={overlayPaths}
             tempPreview={tempPreview}

@@ -43,7 +43,7 @@ export default function ProjectPanel({
     <aside className={`backdrop-blur rounded-2xl p-4 ring-1 transition-colors ${
       darkMode 
         ? 'bg-white/8 ring-white/10' 
-        : 'bg-slate-900/8 ring-slate-300/20'
+        : 'bg-amber-50/90 ring-amber-200/60'
     }`}>
       <h2 className="text-xl font-bold mb-3">📁 Project</h2>
       <div className="space-y-3">
@@ -52,7 +52,7 @@ export default function ProjectPanel({
           className={`w-full px-3 py-2 rounded-xl border transition-colors ${
             darkMode 
               ? 'bg-white/10 border-white/15' 
-              : 'bg-slate-900/10 border-slate-300/30'
+              : 'bg-amber-50/80 border-amber-200/60'
           }`}
           value={projectName}
           onChange={e => setProjectName(e.target.value)}
@@ -68,7 +68,7 @@ export default function ProjectPanel({
               max={256}
               onChange={e => setGridW(parseInt(e.target.value) || 16)}
               className={`w-full px-2 py-1 rounded-lg transition-colors ${
-                darkMode ? 'bg-white/10' : 'bg-slate-900/10'
+                darkMode ? 'bg-white/10' : 'bg-amber-50/70'
               }`}
             />
           </div>
@@ -81,7 +81,7 @@ export default function ProjectPanel({
               max={256}
               onChange={e => setGridH(parseInt(e.target.value) || 16)}
               className={`w-full px-2 py-1 rounded-lg transition-colors ${
-                darkMode ? 'bg-white/10' : 'bg-slate-900/10'
+                darkMode ? 'bg-white/10' : 'bg-amber-50/70'
               }`}
             />
           </div>
@@ -99,7 +99,7 @@ export default function ProjectPanel({
               setFuture([]);
             }}
             className={`flex-1 py-2 rounded-xl transition-colors ${
-              darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+              darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
             }`}
           >
             New
@@ -112,7 +112,7 @@ export default function ProjectPanel({
             {savedList.length === 0 && <div className="text-xs opacity-70">No projects yet.</div>}
             {savedList.map(p => (
               <div key={p.id} className={`flex items-center justify-between rounded-lg px-2 py-1 transition-colors ${
-                darkMode ? 'bg-white/5' : 'bg-slate-900/5'
+                darkMode ? 'bg-white/5' : 'bg-amber-50/70'
               }`}>
                 <button className="text-left text-sm hover:underline" onClick={() => loadProject(p.id)}>
                   {p.name}
@@ -128,27 +128,27 @@ export default function ProjectPanel({
         <h3 className="text-xl font-bold mt-4 mb-2">📤 Export</h3>
         <div className="grid grid-cols-2 gap-2">
           <button onClick={() => exportImage('image/png', true)} className={`py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             PNG
           </button>
           <button onClick={() => exportImage('image/jpeg', false)} className={`py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             JPG
           </button>
           <button onClick={exportSVG} className={`py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             SVG
           </button>
           <button onClick={exportJSON} className={`py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             JSON
           </button>
           <button onClick={exportHTMLSnippet} className={`col-span-2 py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             HTML snippet
           </button>
@@ -156,7 +156,7 @@ export default function ProjectPanel({
 
         <h3 className="text-xl font-bold mt-4 mb-2">📥 Import</h3>
         <div className={`rounded-xl border px-3 py-3 space-y-2 transition-colors ${
-          darkMode ? 'border-white/10 bg-white/5' : 'border-slate-300/30 bg-slate-900/5'
+          darkMode ? 'border-white/10 bg-white/5' : 'border-amber-200/60 bg-amber-50/70'
         }`}>
           <div>
             <p className="text-sm font-medium">Load JSON</p>
@@ -167,7 +167,7 @@ export default function ProjectPanel({
               type="button"
               onClick={triggerFilePicker}
               className={`px-3 py-2 rounded-xl transition-colors ${
-                darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+                darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
               }`}
             >
               Choose file

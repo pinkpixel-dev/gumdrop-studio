@@ -27,7 +27,7 @@ export default function ToolPanel({
     <aside className={`backdrop-blur rounded-2xl p-4 ring-1 transition-colors ${
       darkMode 
         ? 'bg-white/8 ring-white/10' 
-        : 'bg-slate-900/8 ring-slate-300/20'
+        : 'bg-amber-50/90 ring-amber-200/60'
     }`}>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-bold">🧁 Tools</h2>
@@ -36,7 +36,7 @@ export default function ToolPanel({
           className={`px-3 py-1.5 rounded-lg transition-colors ${
             darkMode 
               ? 'bg-white/10 hover:bg-white/15' 
-              : 'bg-slate-900/10 hover:bg-slate-900/15'
+              : 'bg-amber-100/70 hover:bg-amber-100/90'
           }`}
           title="Toggle dark/light mode"
         >
@@ -55,7 +55,7 @@ export default function ToolPanel({
             className={`px-3 py-2 rounded-xl border text-left transition ${
               darkMode
                 ? `hover:bg-white/10 ${tool === t.id ? 'bg-white/15 border-white/30' : 'border-white/10'}`
-                : `hover:bg-slate-900/10 ${tool === t.id ? 'bg-slate-900/15 border-slate-900/30' : 'border-slate-300/30'}`
+                : `hover:bg-amber-100/60 ${tool === t.id ? 'bg-amber-100/80 border-amber-300/60' : 'border-amber-200/40'}`
             }`}
           >
             {t.label}
@@ -81,7 +81,7 @@ export default function ToolPanel({
           <input type="checkbox" checked={fillShape} onChange={e => setFillShape(e.target.checked)} /> Fill rectangles
         </label>
 
-        <div className={`pt-3 border-t ${darkMode ? 'border-white/10' : 'border-slate-300/20'}`}>
+        <div className={`pt-3 border-t ${darkMode ? 'border-white/10' : 'border-amber-200/50'}`}>
           <p className="text-sm mb-2">🎨 Color</p>
           <div className="flex items-center gap-3">
             <input
@@ -119,14 +119,14 @@ export default function ToolPanel({
           )}
         </div>
 
-        <div className={`pt-4 border-t space-y-2 ${darkMode ? 'border-white/10' : 'border-slate-300/20'}`}>
+        <div className={`pt-4 border-t space-y-2 ${darkMode ? 'border-white/10' : 'border-amber-200/50'}`}>
           <button onClick={undo} className={`w-full py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             Undo ⎌
           </button>
           <button onClick={redo} className={`w-full py-2 rounded-xl transition-colors ${
-            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-slate-900/10 hover:bg-slate-900/15'
+            darkMode ? 'bg-white/10 hover:bg-white/15' : 'bg-amber-100/60 hover:bg-amber-100/80'
           }`}>
             Redo ↻
           </button>
