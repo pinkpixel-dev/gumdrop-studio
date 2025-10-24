@@ -17,7 +17,7 @@ Make sure you have Node.js installed (v16 or higher recommended).
    ```
 
 3. **Open your browser**
-   The app will automatically open at `http://localhost:1337`
+   The app will automatically open at `http://localhost:1234`
 
 ## Available Commands
 

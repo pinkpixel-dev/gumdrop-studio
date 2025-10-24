@@ -10,7 +10,7 @@ Gumdrop Studio is a React-based pixel art creation app featuring a dual-layer ca
 
 ### Development
 ```bash
-npm run dev          # Start dev server at http://localhost:1337 (auto-opens)
+npm run dev          # Start dev server at http://localhost:1234 (auto-opens)
 npm run build        # Build production bundle to dist/
 npm run preview      # Preview production build
 ```
@@ -207,7 +207,7 @@ Pure functions with defensive checks:
 ## Styling & UI
 
 - **Tailwind CSS 4.x** for all styling
-- Custom config uses default theme with Vite's port set to 1337
+- Custom config uses default theme with Vite's port set to 1234
 - Emoji used extensively in button labels for visual clarity
 - Rounded corners and shadows for modern aesthetic
 

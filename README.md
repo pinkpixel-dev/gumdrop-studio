@@ -86,7 +86,7 @@ npm install
 npm run dev
 ```
 
-🎉 Opens automatically at **http://localhost:1337**
+🎉 Opens automatically at **http://localhost:1234**
 
 ### Build for Production
 

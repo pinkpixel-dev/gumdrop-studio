@@ -66,7 +66,7 @@ gumdrop-studio/
 │   └── main.jsx            # React entry point
 ├── index.html              # Vite entry HTML
 ├── package.json
-├── vite.config.js          # Vite config (port 1337)
+├── vite.config.js          # Vite config (port 1234)
 ├── tailwind.config.js      # Tailwind config
 ├── postcss.config.js       # PostCSS config
 └── README.md
@@ -277,7 +277,7 @@ npm install
 npm run dev
 ```
 
-Opens at **http://localhost:1337** (auto-opens browser)
+Opens at **http://localhost:1234** (auto-opens browser)
 
 ### Build
 
@@ -303,7 +303,7 @@ npm run preview
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 1337,
+    port: 1234,
     open: true
   }
 });
