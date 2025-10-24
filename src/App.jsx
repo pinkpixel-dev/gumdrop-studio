@@ -16,6 +16,7 @@ export default function App() {
   const [overlayPaths, setOverlayPaths] = useState([]);
 
   const tools = [
+    { id: 'stamp', label: 'Pixel Stamp ⬛' },
     { id: 'pencil', label: 'Pencil 🖊️' },
     { id: 'eraser', label: 'Eraser 🧽' },
     { id: 'line', label: 'Line 📏' },
@@ -25,7 +26,7 @@ export default function App() {
     { id: 'accent', label: 'Accent Pen ✨' },
     { id: 'picker', label: 'Eyedropper 🎯' }
   ];
-  const [tool, setTool] = useState('pencil');
+  const [tool, setTool] = useState('stamp');
   const [color, setColor] = useState('#ff66cc');
   const [alpha, setAlpha] = useState(1);
   const [accentWidth, setAccentWidth] = useState(1);
@@ -146,7 +147,9 @@ export default function App() {
     dragStartRef.current = pos;
     if (tool !== 'picker') pushHistory();
 
-    if (tool === 'pencil') {
+    if (tool === 'stamp') {
+      setTempPreview([[pos.x, pos.y]]);
+    } else if (tool === 'pencil') {
       applyPixels([pos]);
     } else if (tool === 'eraser') {
       applyPixels([pos], true);
@@ -162,7 +165,9 @@ export default function App() {
   function handlePointerMove(e) {
     if (!drawingRef.current || activePointerRef.current !== e.pointerId) return;
     const pos = getGridPos(e);
-    if (tool === 'pencil' || tool === 'eraser') {
+    if (tool === 'stamp') {
+      setTempPreview([[pos.x, pos.y]]);
+    } else if (tool === 'pencil' || tool === 'eraser') {
       const last = dragStartRef.current;
       if (!last) return;
       if (last.x === pos.x && last.y === pos.y) return;
@@ -214,7 +219,9 @@ export default function App() {
     drawingRef.current = false;
     activePointerRef.current = null;
     const start = dragStartRef.current;
-    if (tool === 'line' && start) {
+    if (tool === 'stamp') {
+      applyPixels([[pos.x, pos.y]]);
+    } else if (tool === 'line' && start) {
       applyPixels(rasterLine(start.x, start.y, pos.x, pos.y));
     } else if (tool === 'rect' && start) {
       const pts = fillShape ? fillRect(start.x, start.y, pos.x, pos.y) : rasterRect(start.x, start.y, pos.x, pos.y);
