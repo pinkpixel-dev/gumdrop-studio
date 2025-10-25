@@ -41,7 +41,6 @@ The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then
 | ◯ **Circle** | Perfect circles with midpoint algorithm |
 | ☾ **Curve** | Smooth quadratic Bezier curves (3-click) |
 | ✨ **Accent Pen** | Thin vector lines for fine details |
-| 🎯 **Eyedropper** | Pick colors from canvas |
 
 ### 🌈 Advanced Color System
 

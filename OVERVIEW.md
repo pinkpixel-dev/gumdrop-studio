@@ -88,7 +88,6 @@ gumdrop-studio/
 | **Circle** ◯ | Perfect circles | Midpoint circle algorithm |
 | **Curve** ☾ | Smooth Bezier curves | 3-click quadratic Bezier (200 steps) |
 | **Accent Pen** ✨ | Thin vector lines | Overlay layer with anti-aliasing |
-| **Eyedropper** 🎯 | Pick colors from canvas | Direct pixel color read |
 
 ### Color System
 

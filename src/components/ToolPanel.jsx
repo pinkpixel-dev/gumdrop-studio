@@ -20,8 +20,7 @@ export default function ToolPanel({
   setAccentWidth,
   undo,
   redo,
-  darkMode,
-  setDarkMode
+  darkMode
 }) {
   return (
     <aside className={`backdrop-blur rounded-2xl p-4 ring-1 transition-colors ${
@@ -31,17 +30,6 @@ export default function ToolPanel({
     }`}>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-bold">🧁 Tools</h2>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
-            darkMode 
-              ? 'bg-white/10 hover:bg-white/15' 
-              : 'bg-amber-100/70 hover:bg-amber-100/90'
-          }`}
-          title="Toggle dark/light mode"
-        >
-          {darkMode ? '☀️' : '🌙'}
-        </button>
       </div>
       <div className="grid grid-cols-2 gap-2 mb-4">
         {tools.map(t => (

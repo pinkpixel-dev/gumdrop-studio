@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import ToolPanel from './components/ToolPanel';
 import Canvas from './components/Canvas';
 import ProjectPanel from './components/ProjectPanel';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import { makeEmpty, deepCopyPixels, listProjects, uid, clamp, validXY } from './utils/helpers';
 import { rasterLine, rasterCircle, rasterRect, fillRect, rasterQuad } from './utils/rasterizers';
 import { hexToRGBA, rgbaToHex } from './utils/colors';
@@ -24,7 +26,6 @@ export default function App() {
     { id: 'circle', label: 'Circle ◯' },
     { id: 'curve', label: 'Curve ☾' },
     { id: 'accent', label: 'Accent Pen ✨' },
-    { id: 'picker', label: 'Eyedropper 🎯' }
   ];
   const [tool, setTool] = useState('stamp');
   const [color, setColor] = useState('#ff66cc');
@@ -32,8 +33,8 @@ export default function App() {
   const [accentWidth, setAccentWidth] = useState(1);
   const [tempPreview, setTempPreview] = useState(null);
   const [curveTemps, setCurveTemps] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [future, setFuture] = useState([]);
+  const [History, setHistory] = useState([]);
+  const [Future, setFuture] = useState([]);
   const [projectName, setProjectName] = useState('My Pixel Pet');
   const [savedList, setSavedList] = useState(() => listProjects());
   const [darkMode, setDarkMode] = useState(true);
@@ -424,6 +425,7 @@ export default function App() {
         ? 'bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50' 
         : 'bg-linear-to-br from-[#f6f1e5] via-[#fbf7ef] to-[#f1ebe0] text-slate-900'
     }`}>
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       <div className="mx-auto w-full max-w-[min(100vw-2rem,120rem)] grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)_340px] gap-6">
         <ToolPanel
           tools={tools}
@@ -446,7 +448,6 @@ export default function App() {
           undo={undo}
           redo={redo}
           darkMode={darkMode}
-          setDarkMode={setDarkMode}
         />
         <div ref={centerColRef} className="min-w-0 overflow-auto flex items-start justify-center px-2">
           <Canvas
@@ -492,9 +493,7 @@ export default function App() {
           darkMode={darkMode}
         />
       </div>
-      <footer className="mt-6 text-center text-xs opacity-70">
-        Gumdrop Studio — Made with 💗 by Pink Pixel. Go draw some pixelated kittens.
-      </footer>
+      <Footer darkMode={darkMode} />
     </div>
   );
 }

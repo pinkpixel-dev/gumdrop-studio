@@ -17,6 +17,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Brand font for Gumdrop Studio title */
+.workbench-brand {
+  font-family: "Workbench", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "BLED" 0,
+    "SCAN" 0;
+}
+
 * {
   box-sizing: border-box;
 }
