@@ -1,8 +1,9 @@
 # 🧁 Gumdrop Studio — Project Overview
 
-**Last Updated:** October 24, 2025 at 5:20 PM ET  
+**Last Updated:** February 11, 2026  
 **Version:** 1.0.0  
-**Status:** Production Ready ✨
+**Status:** Production Ready ✨  
+**Deployment:** Cloudflare Pages with Wrangler
 
 ---
 
@@ -45,15 +46,16 @@ All dependencies are **latest stable versions** as of October 2025.
 ```
 gumdrop-studio/
 ├── public/
-│   ├── index.html          # HTML entry point
-│   └── favicon.png         # 🧁 Favicon
+│   ├── favicon.png         # 🧁 Favicon
+│   ├── logo.png            # Brand logo
+│   ├── _redirects          # Cloudflare Pages SPA routing
+│   └── _routes.json        # Cloudflare routing config
 ├── src/
-│   ├── assets/
-│   │   ├── icon.png        # App icon
-│   │   └── logo.png        # Brand logo
 │   ├── components/
 │   │   ├── Canvas.jsx      # Dual-canvas rendering + pointer events
 │   │   ├── ColorWheel.jsx  # HSV color picker
+│   │   ├── Footer.jsx      # Footer component
+│   │   ├── Header.jsx      # Header with theme toggle
 │   │   ├── ProjectPanel.jsx # Save/load/export UI
 │   │   └── ToolPanel.jsx   # Tool selection + color controls
 │   ├── utils/
@@ -65,10 +67,11 @@ gumdrop-studio/
 │   ├── index.css           # Global styles
 │   └── main.jsx            # React entry point
 ├── index.html              # Vite entry HTML
-├── package.json
+├── package.json            # Dependencies + deploy scripts
 ├── vite.config.js          # Vite config (port 1234)
 ├── tailwind.config.js      # Tailwind config
 ├── postcss.config.js       # PostCSS config
+├── wrangler.toml           # Cloudflare Pages config
 └── README.md
 ```
 
@@ -98,14 +101,15 @@ gumdrop-studio/
 
 ### Canvas Features
 
-- **Adjustable Zoom:** 4x to 40x scale (default 16x)
+- **Adjustable Zoom:** 4x to 40x scale (default 40x, auto-fits to viewport)
 - **Grid Overlay:** Toggle-able pixel grid
 - **Theme-Aware Grid:** Grid stroke color adapts to light/dark palettes for consistent visibility
 - **Softer Light Theme:** Warm cream gradient tones reduce glare and keep panels legible
+- **Dark/Light Mode Toggle:** User-selectable theme in header
 - **Dual Layers:**
   - **Pixel Layer:** 2D array of RGBA values (blocky, crisp edges)
   - **Overlay Layer:** Vector paths for smooth thin lines (1-6px width)
-- **Canvas Sizes:** 4×4 to 256×256 pixels (default 32×32)
+- **Canvas Sizes:** 4×4 to 256×256 pixels (default 40×40)
 
 ### Project Management
 
@@ -140,10 +144,23 @@ All state lives in **`App.jsx`** with immutable updates:
 
 ```javascript
 // State structure
-pixels: Array[][]        // pixels[y][x] = { r, g, b, a } | null
-overlayPaths: Array[]    // [{ id, points: [{x,y}], color, width }]
-history: Array[]         // [{ pixels, overlay }]
-future: Array[]          // Redo stack
+gridW: 40                    // Canvas width (default)
+gridH: 40                    // Canvas height (default)
+scale: 40                    // User's preferred zoom (default)
+renderScale: number          // Auto-fitted scale for display
+pixels: Array[][]            // pixels[y][x] = { r, g, b, a } | null
+overlayPaths: Array[]        // [{ id, points: [{x,y}], color, width }]
+history: Array[]             // [{ pixels, overlay }]
+future: Array[]              // Redo stack [{ pixels, overlay }]
+tool: string                 // Current tool ID (default: 'stamp')
+color: string                // Hex color (default: '#ff66cc')
+alpha: number                // Transparency 0-1 (default: 1)
+accentWidth: number          // Accent pen width (default: 1)
+showGrid: boolean            // Grid visibility (default: true)
+fillShape: boolean           // Rectangle fill toggle (default: false)
+darkMode: boolean            // Theme preference (default: true)
+tempPreview: Array[]         // Shape preview coordinates
+curveTemps: Array[]          // Curve tool state (3-click)
 ```
 
 **Deep Copying Pattern:**
@@ -200,7 +217,10 @@ export function rasterLine(x0, y0, x1, y1) {
 
 - **Grid Coordinates:** Integer positions `(x, y)` from `(0, 0)` to `(gridW-1, gridH-1)`
 - **Screen Coordinates:** Converted via `getGridPos(e)` using `getBoundingClientRect()`
-- **Display Scale:** Grid units × scale factor (e.g., 32×32 grid at 16x scale = 512×512px display)
+- **Display Scale:** Grid units × `renderScale` factor (auto-fits to viewport)
+- **User Scale:** Separate `scale` state (4x-40x, default 40x) controlled by zoom slider
+- **Auto-fit:** `renderScale` computed to fit canvas within viewport while respecting user's `scale` as maximum
+- **Example:** 40×40 grid at 40x scale = 1600×1600px display (auto-scales down if viewport smaller)
 
 ### Color Management
 
@@ -296,6 +316,18 @@ Output: `dist/` directory
 npm run preview
 ```
 
+### Deploy to Cloudflare Pages
+
+```bash
+npm run deploy              # Deploy to preview
+npm run deploy:production   # Deploy to production
+```
+
+Or deploy manually:
+```bash
+wrangler pages deploy dist
+```
+
 ---
 
 ## 🔧 Configuration
@@ -339,7 +371,8 @@ Uses default theme, scans:
   "@vitejs/plugin-react": "^5.1.0",
   "autoprefixer": "^10.4.21",
   "tailwindcss": "^4.1.16",
-  "vite": "^7.1.12"
+  "vite": "^7.1.12",
+  "wrangler": "^4.64.0"
 }
 ```
 

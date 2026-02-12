@@ -145,15 +145,16 @@ npm run preview
 ```
 gumdrop-studio/
 ├── public/
-│   ├── index.html          # HTML entry
-│   └── favicon.png         # 🧁 Favicon
+│   ├── favicon.png         # 🧁 Favicon
+│   ├── logo.png            # Brand logo
+│   ├── _redirects          # Cloudflare Pages SPA routing
+│   └── _routes.json        # Cloudflare routing config
 ├── src/
-│   ├── assets/
-│   │   ├── icon.png        # App icon
-│   │   └── logo.png        # Brand logo
 │   ├── components/
 │   │   ├── Canvas.jsx      # Dual-canvas rendering
 │   │   ├── ColorWheel.jsx  # HSV color picker
+│   │   ├── Footer.jsx      # Footer component
+│   │   ├── Header.jsx      # Header with theme toggle
 │   │   ├── ProjectPanel.jsx # Save/load/export UI
 │   │   └── ToolPanel.jsx   # Tool selection + controls
 │   ├── utils/
@@ -164,9 +165,12 @@ gumdrop-studio/
 │   ├── App.jsx             # Main app logic
 │   ├── index.css           # Global styles
 │   └── main.jsx            # React entry
+├── DEVELOPMENT.md          # Development guidance
 ├── OVERVIEW.md             # Comprehensive docs
-├── WARP.md                 # Dev guidance
+├── CHANGELOG.md            # Version history
+├── SETUP.md                # Quick setup guide
 ├── LICENSE                 # Apache 2.0
+├── wrangler.toml           # Cloudflare Pages config
 └── package.json
 ```
 
@@ -178,15 +182,18 @@ gumdrop-studio/
 - **Vite 7.1.12** - Lightning-fast build tool and dev server
 - **Tailwind CSS 4.1.16** - Utility-first styling with latest improvements
 - **Canvas API** - Native HTML5 rendering (pixel-perfect + anti-aliased)
+- **Wrangler 4.64.0** - Cloudflare Pages deployment tool
 
-*All dependencies are **latest stable versions** as of October 2025.*
+*All dependencies are **latest stable versions** as of February 2026.*
 
 ---
 
 ## 📚 Documentation
 
 - **[OVERVIEW.md](OVERVIEW.md)** - Comprehensive technical documentation
-- **[WARP.md](WARP.md)** - Development guidance for Warp users
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Development guidance and architecture
+- **[SETUP.md](SETUP.md)** - Quick setup guide
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
 - **README.md** (this file) - Quick start guide
 
 ---

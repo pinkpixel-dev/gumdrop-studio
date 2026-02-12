@@ -24,6 +24,8 @@ Make sure you have Node.js installed (v16 or higher recommended).
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build locally
+- `npm run deploy` - Deploy to Cloudflare Pages (preview)
+- `npm run deploy:production` - Deploy to Cloudflare Pages (production)
 
 ## What Changed?
 
@@ -36,6 +38,8 @@ src/
 ├── components/          # React components
 │   ├── Canvas.jsx      # Main drawing canvas
 │   ├── ColorWheel.jsx  # Color picker wheel
+│   ├── Footer.jsx      # Footer component
+│   ├── Header.jsx      # Header with theme toggle
 │   ├── ProjectPanel.jsx # Save/load/export panel
 │   └── ToolPanel.jsx   # Drawing tools panel
 ├── utils/              # Utility functions
@@ -43,10 +47,15 @@ src/
 │   ├── colors.js       # Color conversion functions
 │   ├── helpers.js      # General helper functions
 │   └── rasterizers.js  # Drawing algorithms (line, circle, etc.)
-├── assets/             # Images (logo, icon)
 ├── App.jsx            # Main app component
 ├── main.jsx           # Entry point
 └── index.css          # Global styles
+
+public/
+├── favicon.png         # App favicon
+├── logo.png            # Brand logo
+├── _redirects          # Cloudflare Pages SPA routing
+└── _routes.json        # Cloudflare routing config
 ```
 
 ### ✨ Benefits
@@ -55,6 +64,7 @@ src/
 - **Easier maintenance**: Each component has a single responsibility
 - **Reusability**: Utilities can be imported anywhere
 - **Modern tooling**: Vite for fast development and optimized builds
+- **Easy deployment**: Configured for Cloudflare Pages with Wrangler
 - **Type safety ready**: Easy to add TypeScript later if needed
 
 ## Troubleshooting

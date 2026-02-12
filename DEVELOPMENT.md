@@ -1,4 +1,4 @@
-# WARP.md
+# DEVELOPMENT
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
@@ -37,9 +37,11 @@ The app maintains **two separate canvas layers**:
 
 ### State Management Pattern
 All state lives in `App.jsx` with immutable updates:
-- **History/Undo**: Deep copies of pixel + overlay state stored in `history` array
+- **History/Undo**: Deep copies of pixel + overlay state stored in `history` array with separate `future` array for redo
 - **Tool state**: Current tool, color (hex), alpha, drawing flags
+- **Theme state**: Dark/light mode preference stored in state
 - **Transient preview**: `tempPreview` shows shape outline before committing
+- **Auto-fit scale**: `renderScale` automatically adjusts to fit viewport while preserving user's `scale` preference
 - **Project data**: Stored in `localStorage` with namespace `gumdrop:projects`
 
 ### Coordinate System
@@ -155,6 +157,15 @@ Pure functions with defensive checks:
 - Color picker integration
 - Zoom/grid controls
 
+### `src/components/Header.jsx`
+- App branding and logo display
+- Dark/light mode toggle button
+- Theme-aware styling
+
+### `src/components/Footer.jsx`
+- Pink Pixel branding footer
+- Attribution text
+
 ### `src/components/ColorWheel.jsx`
 - HSV color picker component
 - Click-to-select color interaction
@@ -198,6 +209,8 @@ Pure functions with defensive checks:
 - Practical limit: ~256×256 pixels before performance degrades
 - Browser canvas size limit: Usually 32767×32767 px, but performance varies
 - Scale multiplier affects only display, not memory usage
+- Default canvas: 40×40 pixels at 40x scale (auto-fits to viewport)
+- Auto-fit scale: Canvas automatically scales down to fit available viewport space
 
 ### Browser Compatibility
 - Requires ES2015+ features (arrow functions, destructuring)
@@ -208,7 +221,12 @@ Pure functions with defensive checks:
 
 - **Tailwind CSS 4.x** for all styling
 - Custom config uses default theme with Vite's port set to 1234
+- **Dark/Light Mode**: User-selectable theme with smooth transitions
+- **Theme-aware colors**: Grid, backgrounds, and UI adapt to selected theme
+- **Light theme**: Warm cream gradient (`#f6f1e5` to `#f1ebe0`) reduces glare
+- **Dark theme**: Slate gradient (`slate-900` to `slate-800`) for comfortable viewing
 - Emoji used extensively in button labels for visual clarity
+- Glassmorphism with backdrop-blur effects
 - Rounded corners and shadows for modern aesthetic
 
 ---
