@@ -6,7 +6,7 @@
 
 # 🧁 Gumdrop Studio
 
-**A delightful browser-based pixel art creation app**
+**A fun and easy to use browser-based pixel art creation app**
 
 [![React](https://img.shields.io/badge/React-19.2.0-61dafb?style=flat&logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.12-646cff?style=flat&logo=vite)](https://vitejs.dev/)
