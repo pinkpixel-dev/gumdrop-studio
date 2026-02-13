@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      support-dependencies: 
+        applies-to: version-updates
+        patterns:
+          - "*"
+      minor-and-patch:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    ignore:
+        update-types: ["version-update:semver-major"]
+    assignees:
+      - "Copilot"
