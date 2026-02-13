@@ -73,7 +73,6 @@ setPixels(pixels);
 
 ### Canvas Rendering
 - Always clear before redraw: `ctx.clearRect(0, 0, w, h)`
-- Disable pagers for git commands: `git --no-pager`
 - Use OffscreenCanvas when available for better performance
 
 ## Development Workflow
