@@ -32,7 +32,7 @@ assignees: ''
 - [ ] UI/UX (interface improvements, accessibility)
 - [ ] Performance (speed, optimization)
 - [ ] Mobile/Touch Support
-- [ ] Other: _______________
+- [ ] Other (please specify)
 
 ## 🔄 Alternatives Considered
 <!-- Describe any alternative solutions or features you've considered -->
