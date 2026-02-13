@@ -17,6 +17,6 @@ updates:
           - "patch"
           - "minor"
     ignore:
-        update-types: ["version-update:semver-major"]
+        update-types: version-update:semver-major
     assignees:
       - "Copilot"
