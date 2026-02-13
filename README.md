@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-    <img src="src/assets/logo.png" alt="Gumdrop Studio" width="300">
+    <img src="public/logo.png" alt="Gumdrop Studio" width="300">
 </p>
 
 # 🧁 Gumdrop Studio
