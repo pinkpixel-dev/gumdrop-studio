@@ -7,14 +7,22 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler pages deploy dist",
-    "deploy:production": "npm run build && wrangler pages deploy dist --branch=main"
+    "deploy:production": "npm run build && wrangler pages deploy dist --branch=main",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.16",
+    "@tauri-apps/api": "^2.10.1",
+    "@tauri-apps/plugin-dialog": "^2.6.0",
+    "@tauri-apps/plugin-fs": "^2.4.5",
+    "@tauri-apps/plugin-shell": "^2.3.5",
+    "@tauri-apps/plugin-store": "^2.4.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.10.0",
     "@vitejs/plugin-react": "^5.1.0",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.16",

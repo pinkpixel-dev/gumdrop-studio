@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { isDesktop } from '../utils/desktop';
 
 export default function ProjectPanel({
   projectName,
@@ -27,7 +28,13 @@ export default function ProjectPanel({
   const [importFilename, setImportFilename] = useState('');
 
   const triggerFilePicker = () => {
-    fileInputRef.current?.click();
+    if (isDesktop()) {
+      // On desktop: directly call handleImportJSON without event (uses native dialog)
+      handleImportJSON();
+    } else {
+      // On web: trigger hidden file input
+      fileInputRef.current?.click();
+    }
   };
 
   const handleImportChange = e => {

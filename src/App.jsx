@@ -4,9 +4,11 @@ import Canvas from './components/Canvas';
 import ProjectPanel from './components/ProjectPanel';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { makeEmpty, deepCopyPixels, listProjects, uid, clamp, validXY } from './utils/helpers';
+import { makeEmpty, deepCopyPixels, uid, clamp, validXY } from './utils/helpers';
 import { rasterLine, rasterCircle, rasterRect, fillRect, rasterQuad } from './utils/rasterizers';
 import { hexToRGBA, rgbaToHex } from './utils/colors';
+import { saveFile, saveDataURL, openFile, showMessage } from './utils/desktop';
+import * as storage from './utils/storage';
 
 export default function App() {
   const [gridW, setGridW] = useState(40);
@@ -36,8 +38,86 @@ export default function App() {
   const [History, setHistory] = useState([]);
   const [Future, setFuture] = useState([]);
   const [projectName, setProjectName] = useState('My Pixel Pet');
-  const [savedList, setSavedList] = useState(() => listProjects());
+  const [savedList, setSavedList] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
+
+  // Load saved project list on mount
+  useEffect(() => {
+    storage.listProjects().then(setSavedList);
+  }, []);
+
+  // Listen for menu events from Tauri
+  useEffect(() => {
+    // Check if running in Tauri
+    if (typeof window === 'undefined' || !window.__TAURI_INTERNALS__) return;
+    
+    let unlisteners = [];
+    
+    (async () => {
+      const { listen } = await import('@tauri-apps/api/event');
+      
+      // File menu
+      unlisteners.push(await listen('menu:new', () => {
+        setPixels(makeEmpty(gridW, gridH));
+        setOverlayPaths([]);
+        setHistory([]);
+        setFuture([]);
+      }));
+      
+      unlisteners.push(await listen('menu:open', () => {
+        handleImportJSON();
+      }));
+      
+      unlisteners.push(await listen('menu:save', () => {
+        saveProject();
+      }));
+      
+      unlisteners.push(await listen('menu:save_as', () => {
+        // TODO: Implement save as with file dialog
+        saveProject();
+      }));
+      
+      // Export menu
+      unlisteners.push(await listen('menu:export', (event) => {
+        const format = event.payload;
+        if (format === 'png') exportImage('image/png', true);
+        else if (format === 'jpg') exportImage('image/jpeg', false);
+        else if (format === 'svg') exportSVG();
+        else if (format === 'json') exportJSON();
+        else if (format === 'html') exportHTMLSnippet();
+      }));
+      
+      // Edit menu
+      unlisteners.push(await listen('menu:undo', () => {
+        undo();
+      }));
+      
+      unlisteners.push(await listen('menu:redo', () => {
+        redo();
+      }));
+      
+      // View menu
+      unlisteners.push(await listen('menu:zoom_in', () => {
+        setScale(prev => Math.min(40, prev + 2));
+      }));
+      
+      unlisteners.push(await listen('menu:zoom_out', () => {
+        setScale(prev => Math.max(4, prev - 2));
+      }));
+      
+      unlisteners.push(await listen('menu:toggle_grid', () => {
+        setShowGrid(prev => !prev);
+      }));
+      
+      unlisteners.push(await listen('menu:toggle_dark', () => {
+        setDarkMode(prev => !prev);
+      }));
+    })();
+    
+    return () => {
+      unlisteners.forEach(unlisten => unlisten && unlisten());
+    };
+  }, [gridW, gridH]); // Re-setup listeners if grid dimensions change
 
   const pixCanvasRef = useRef(null);
   const centerColRef = useRef(null);
@@ -61,7 +141,10 @@ export default function App() {
       const availableW = Math.max(0, el ? el.clientWidth : (window.innerWidth - 720)); // rough fallback for side panels + gaps
       const maxByW = Math.max(1, Math.floor(availableW / Math.max(1, gridW)));
       // Optionally also constrain by viewport height (keeps in view vertically)
-      const availableH = Math.max(0, window.innerHeight - 220); // account for padding/header/footer
+      // Account for header (~80px), padding (~48px top+bottom), and native menu bar in desktop mode (~30px)
+      const isDesktopMode = typeof window !== 'undefined' && window.__TAURI_INTERNALS__;
+      const headerHeight = 80 + (isDesktopMode ? 30 : 0);
+      const availableH = Math.max(0, el ? el.clientHeight : (window.innerHeight - headerHeight - 48));
       const maxByH = Math.max(1, Math.floor(availableH / Math.max(1, gridH)));
       const fitted = Math.max(1, Math.min(scale, maxByW, maxByH));
       setRenderScale(fitted);
@@ -321,10 +404,17 @@ export default function App() {
       ctx.restore();
     }
     const dataURL = out.toDataURL(type);
-    downloadDataURL(dataURL, type === 'image/png' ? 'mygumdrop.png' : 'mygumdrop.jpg');
+    const filename = type === 'image/png' ? 'mygumdrop.png' : 'mygumdrop.jpg';
+    const extension = type === 'image/png' ? 'png' : 'jpg';
+    saveDataURL(dataURL, filename, {
+      filters: [{
+        name: extension.toUpperCase(),
+        extensions: [extension]
+      }]
+    });
   }
 
-  function exportSVG() {
+  async function exportSVG() {
     const rects = [];
     for (let y = 0; y < gridH; y++)
       for (let x = 0; x < gridW; x++) {
@@ -340,49 +430,35 @@ export default function App() {
       })
       .join('\n');
     const svg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${gridW} ${gridH}" shape-rendering="crispEdges">\n${rects.join('\n')}\n${paths}\n</svg>`;
-    downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), 'gumdrop.svg');
+    saveFile(new Blob([svg], { type: 'image/svg+xml' }), 'gumdrop.svg', {
+      filters: [{ name: 'SVG', extensions: ['svg'] }]
+    });
   }
 
-  function exportJSON() {
+  async function exportJSON() {
     const payload = { w: gridW, h: gridH, pixels, overlayPaths };
-    downloadBlob(new Blob([JSON.stringify(payload)], { type: 'application/json' }), 'gumdrop.json');
+    saveFile(new Blob([JSON.stringify(payload)], { type: 'application/json' }), 'gumdrop.json', {
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
   }
 
-  function exportHTMLSnippet() {
+  async function exportHTMLSnippet() {
     const payload = { w: gridW, h: gridH, pixels, overlayPaths };
     const html = `<!DOCTYPE html>\n<html><head><meta charset="utf-8"/><title>Pixel Pet Snippet</title><style>body{background:#0b0b12;color:#eee;font-family:ui-sans-serif,system-ui;margin:0;display:grid;place-items:center;height:100svh}</style></head><body><canvas id="c" width="${gridW}" height="${gridH}" style="image-rendering:pixelated"></canvas><script>\nconst data=${JSON.stringify(payload)};\nconst c=document.getElementById('c');const ctx=c.getContext('2d');const img=ctx.createImageData(data.w,data.h);\nfor(let y=0;y<data.h;y++){for(let x=0;x<data.w;x++){const i=(y*data.w+x)*4;const p=data.pixels[y][x];if(!p){img.data[i+3]=0;continue;}img.data[i]=p.r;img.data[i+1]=p.g;img.data[i+2]=p.b;img.data[i+3]=Math.round(p.a*255);}}\nctx.putImageData(img,0,0);\nif(data.overlayPaths&&data.overlayPaths.length){ctx.imageSmoothingEnabled=true;for(const p of data.overlayPaths){ctx.beginPath();ctx.lineWidth=p.width||1;ctx.lineJoin='round';ctx.lineCap='round';ctx.strokeStyle='rgba('+p.color.r+','+p.color.g+','+p.color.b+','+p.color.a+')';const s=p.points[0];ctx.moveTo(s.x+0.5,s.y+0.5);for(let i=1;i<p.points.length;i++){const pt=p.points[i];ctx.lineTo(pt.x+0.5,pt.y+0.5);}ctx.stroke();}}\n</script></body></html>`;
-    downloadBlob(new Blob([html], { type: 'text/html' }), 'gumdrop_snippet.html');
+    saveFile(new Blob([html], { type: 'text/html' }), 'gumdrop_snippet.html', {
+      filters: [{ name: 'HTML', extensions: ['html'] }]
+    });
   }
 
-  function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function downloadDataURL(dataURL, filename) {
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = filename;
-    a.click();
-  }
-
-  function saveProject() {
+  async function saveProject() {
     const payload = { id: uid(), name: projectName, updated: Date.now(), gridW, gridH, pixels, overlayPaths };
-    const list = JSON.parse(localStorage.getItem('gumdrop:projects') || '[]');
-    const idx = list.findIndex(p => p.name === projectName);
-    if (idx >= 0) list[idx] = { ...payload, id: list[idx].id };
-    else list.push(payload);
-    localStorage.setItem('gumdrop:projects', JSON.stringify(list));
+    await storage.saveProject(payload);
+    const list = await storage.listProjects();
     setSavedList(list);
   }
 
-  function loadProject(id) {
-    const list = JSON.parse(localStorage.getItem('gumdrop:projects') || '[]');
-    const p = list.find(p => p.id === id) || list.find(p => p.name === id);
+  async function loadProject(id) {
+    const p = await storage.loadProject(id);
     if (!p) return;
     setProjectName(p.name);
     setGridW(p.gridW);
@@ -393,105 +469,139 @@ export default function App() {
     setFuture([]);
   }
 
-  function deleteProject(id) {
-    const list = JSON.parse(localStorage.getItem('gumdrop:projects') || '[]').filter(p => p.id !== id);
-    localStorage.setItem('gumdrop:projects', JSON.stringify(list));
+  async function deleteProject(id) {
+    await storage.deleteProject(id);
+    const list = await storage.listProjects();
     setSavedList(list);
   }
 
-  function handleImportJSON(e) {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = () => {
+  async function handleImportJSON(e) {
+    // If triggered by file input (web fallback), use the existing event
+    if (e?.target?.files) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = async () => {
+        try {
+          const d = storage.importProjectJSON(r.result);
+          if (!d) {
+            await showMessage('Import Error', 'Invalid project file format');
+            return;
+          }
+          setGridW(d.w || d.gridW);
+          setGridH(d.h || d.gridH);
+          setPixels(d.pixels);
+          setOverlayPaths(d.overlayPaths || []);
+          setHistory([]);
+          setFuture([]);
+        } catch (err) {
+          await showMessage('Import Error', `Failed to import file: ${err.message}`);
+        }
+      };
+      r.readAsText(f);
+    } else {
+      // Desktop: use native open dialog
+      const result = await openFile({
+        filters: [
+          { name: 'Gumdrop Projects', extensions: ['gumdrop', 'json'] }
+        ]
+      });
+      
+      if (!result) return; // User cancelled
+      
       try {
-        const d = JSON.parse(r.result);
-        setGridW(d.w);
-        setGridH(d.h);
+        const d = storage.importProjectJSON(result.content);
+        if (!d) {
+          await showMessage('Import Error', 'Invalid project file format');
+          return;
+        }
+        setGridW(d.w || d.gridW);
+        setGridH(d.h || d.gridH);
         setPixels(d.pixels);
         setOverlayPaths(d.overlayPaths || []);
         setHistory([]);
         setFuture([]);
       } catch (err) {
-        alert('Bad JSON');
+        await showMessage('Import Error', `Failed to import file: ${err.message}`);
       }
-    };
-    r.readAsText(f);
+    }
   }
 
   return (
-    <div className={`min-h-svh w-full p-4 md:p-8 transition-colors duration-300 ${
+    <div className={`min-h-screen w-screen flex flex-col transition-colors duration-300 ${
       darkMode 
         ? 'bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50' 
         : 'bg-linear-to-br from-[#f6f1e5] via-[#fbf7ef] to-[#f1ebe0] text-slate-900'
     }`}>
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-      <div className="mx-auto w-full max-w-[min(100vw-2rem,120rem)] grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)_340px] gap-6">
-        <ToolPanel
-          tools={tools}
-          tool={tool}
-          setTool={setTool}
-          setTempPreview={setTempPreview}
-          setCurveTemps={setCurveTemps}
-          scale={scale}
-          setScale={setScale}
-          showGrid={showGrid}
-          setShowGrid={setShowGrid}
-          fillShape={fillShape}
-          setFillShape={setFillShape}
-          color={color}
-          setColor={setColor}
-          alpha={alpha}
-          setAlpha={setAlpha}
-          accentWidth={accentWidth}
-          setAccentWidth={setAccentWidth}
-          undo={undo}
-          redo={redo}
-          darkMode={darkMode}
-        />
-        <div ref={centerColRef} className="min-w-0 overflow-auto flex items-start justify-center px-2">
-          <Canvas
-            ref={pixCanvasRef}
-            gridW={gridW}
-            gridH={gridH}
-            scale={renderScale}
-            showGrid={showGrid}
-            gridColor={gridColor}
-            pixels={pixels}
-            overlayPaths={overlayPaths}
-            tempPreview={tempPreview}
+      <div className="flex-1 w-full p-4 md:p-6 overflow-hidden">
+        <div className="h-full w-full grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)_340px] gap-4 lg:gap-6">
+          <ToolPanel
+            tools={tools}
             tool={tool}
+            setTool={setTool}
+            setTempPreview={setTempPreview}
+            setCurveTemps={setCurveTemps}
+            scale={scale}
+            setScale={setScale}
+            showGrid={showGrid}
+            setShowGrid={setShowGrid}
+            fillShape={fillShape}
+            setFillShape={setFillShape}
             color={color}
-            handlePointerDown={handlePointerDown}
-            handlePointerMove={handlePointerMove}
-            handlePointerUp={handlePointerUp}
-            handlePointerCancel={handlePointerCancel}
-            handlePointerLeave={handlePointerLeave}
+            setColor={setColor}
+            alpha={alpha}
+            setAlpha={setAlpha}
+            accentWidth={accentWidth}
+            setAccentWidth={setAccentWidth}
+            undo={undo}
+            redo={redo}
+            darkMode={darkMode}
+          />
+          <div ref={centerColRef} className="min-w-0 h-full flex items-center justify-center">
+            <Canvas
+              ref={pixCanvasRef}
+              gridW={gridW}
+              gridH={gridH}
+              scale={renderScale}
+              showGrid={showGrid}
+              gridColor={gridColor}
+              pixels={pixels}
+              overlayPaths={overlayPaths}
+              tempPreview={tempPreview}
+              tool={tool}
+              color={color}
+              handlePointerDown={handlePointerDown}
+              handlePointerMove={handlePointerMove}
+              handlePointerUp={handlePointerUp}
+              handlePointerCancel={handlePointerCancel}
+              handlePointerLeave={handlePointerLeave}
+            />
+          </div>
+          <ProjectPanel
+            projectName={projectName}
+            setProjectName={setProjectName}
+            gridW={gridW}
+            setGridW={setGridW}
+            gridH={gridH}
+            setGridH={setGridH}
+            saveProject={saveProject}
+            savedList={savedList}
+            loadProject={loadProject}
+            deleteProject={deleteProject}
+            exportImage={exportImage}
+            exportSVG={exportSVG}
+            exportJSON={exportJSON}
+            exportHTMLSnippet={exportHTMLSnippet}
+            handleImportJSON={handleImportJSON}
+            makeEmpty={makeEmpty}
+            setPixels={setPixels}
+            setOverlayPaths={setOverlayPaths}
+            setHistory={setHistory}
+            setFuture={setFuture}
+            darkMode={darkMode}
           />
         </div>
-        <ProjectPanel
-          projectName={projectName}
-          setProjectName={setProjectName}
-          gridW={gridW}
-          setGridW={setGridW}
-          gridH={gridH}
-          setGridH={setGridH}
-          saveProject={saveProject}
-          savedList={savedList}
-          loadProject={loadProject}
-          deleteProject={deleteProject}
-          exportImage={exportImage}
-          exportSVG={exportSVG}
-          exportJSON={exportJSON}
-          exportHTMLSnippet={exportHTMLSnippet}
-          handleImportJSON={handleImportJSON}
-          makeEmpty={makeEmpty}
-          setPixels={setPixels}
-          setOverlayPaths={setOverlayPaths}
-          setHistory={setHistory}
-          setFuture={setFuture}
-          darkMode={darkMode}
-        />
       </div>
       <Footer darkMode={darkMode} />
     </div>

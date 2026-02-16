@@ -27,3 +27,6 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# Tauri/Rust
+src-tauri/target/
