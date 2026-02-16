@@ -12,21 +12,22 @@
     "tauri:build": "tauri build"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-dialog": "^2.6.0",
     "@tauri-apps/plugin-fs": "^2.4.5",
     "@tauri-apps/plugin-shell": "^2.3.5",
     "@tauri-apps/plugin-store": "^2.4.2",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.10.0",
-    "@vitejs/plugin-react": "^5.1.0",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.16",
-    "vite": "^7.1.12",
-    "wrangler": "^4.64.0"
+    "@vitejs/plugin-react": "^5.1.4",
+    "autoprefixer": "^10.4.24",
+    "baseline-browser-mapping": "^2.9.19",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.3.1",
+    "wrangler": "^4.65.0"
   }
 }
