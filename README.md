@@ -41,11 +41,11 @@ npm i -g @pinkpixel/gumdrop-studio@latest
 
 Download the latest release from [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest):
 
-| Package | Platform | Description | Size |
-| ------- | -------- | ----------- | ---- |
-| [**Windows Installer** 🪟](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_x64-setup.exe) | Windows 10/11 | NSIS setup wizard | ~5 MB |
-| [**AppImage** 🐧](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage) | Linux (portable) | Runs on any Linux distro | ~108 MB |
-| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb) | Debian / Ubuntu | System installer | ~8.5 MB |
+| Package                                                                                                                                 | Platform         | Description              | Size    |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------ | ------- |
+| [**Windows Installer** 🪟](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_x64-setup.exe) | Windows 10/11    | NSIS setup wizard        | ~5 MB   |
+| [**AppImage** 🐧](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage)         | Linux (portable) | Runs on any Linux distro | ~108 MB |
+| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb)                  | Debian / Ubuntu  | System installer         | ~8.5 MB |
 
 ```bash
 # Windows — run the setup wizard

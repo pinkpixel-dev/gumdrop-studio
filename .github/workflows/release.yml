@@ -4,14 +4,14 @@ on:
   # Runs automatically when a version tag is pushed: git tag v1.2.0 && git push --tags
   push:
     tags:
-      - 'v*'
+      - "v*"
   # Also allows manual triggering — useful for adding builds to an existing release
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to upload to (e.g. v1.1.0)'
+        description: "Release tag to upload to (e.g. v1.1.0)"
         required: true
-        default: 'v1.1.0'
+        default: "v1.1.0"
 
 jobs:
   # ─────────────────────────────────────────────
@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -36,7 +36,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          workspaces: "./src-tauri -> target"
 
       - name: Install frontend deps
         run: npm ci
@@ -71,7 +71,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -79,7 +79,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          workspaces: "./src-tauri -> target"
 
       - name: Install system dependencies
         run: |
@@ -97,7 +97,7 @@ jobs:
 
       - name: Build Tauri (AppImage + deb)
         env:
-          NO_STRIP: 'YES'
+          NO_STRIP: "YES"
         run: npx tauri build --bundles appimage,deb
 
       - name: Upload Linux installers to release
