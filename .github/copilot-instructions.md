@@ -1,174 +1,171 @@
-# Copilot Instructions for Gumdrop Studio
+# Gumdrop Studio — GitHub Copilot Instructions
 
-## Project Overview
+Gumdrop Studio is a React 19 pixel art creation app with a dual-layer canvas system (pixel + vector overlay). It ships both as a browser app (Cloudflare Pages) and a native desktop app (Tauri 2 / Linux AppImage + .deb).
 
-Gumdrop Studio is a React-based browser pixel art creation app featuring a **dual-layer canvas system**:
+---
 
-- **Pixel Layer**: Blocky RGBA pixel array for crisp pixel art
-- **Overlay Layer**: Anti-aliased vector paths for thin accent lines (1-6px)
+## Commands
 
-**Tech Stack**: React 19.2.0, Vite 7.1.12, Tailwind CSS 4.1.16
+```bash
+# Development
+npm install          # Install dependencies
+npm run dev          # Dev server at http://localhost:1234 (auto-opens browser)
+npm run build        # Production bundle → dist/
+npm run preview      # Preview production build locally
 
-## Architecture & Key Concepts
+# Desktop (Tauri — requires Rust + webkit2gtk-4.1)
+npm run tauri:dev    # Launch Tauri desktop window with hot reload
+npm run tauri:build  # Build AppImage + .deb → src-tauri/target/release/bundle/
 
-### State Management
-
-- All state lives in `App.jsx` with **immutable updates**
-- Use deep copying for state changes: `setPixels(prev => { const copy = deepCopyPixels(prev); /* modify copy */ return copy; })`
-- Never mutate state directly
-- History/Undo uses separate `history` and `future` arrays storing complete state snapshots
-
-### Dual-Layer System
-
-1. **Pixel Layer** (`pixels` state): 2D array `pixels[y][x] = { r, g, b, a } | null`
-   - Rendered via `renderPixelsToCanvas()` in `utils/canvas.js`
-   - Disable image smoothing: `ctx.imageSmoothingEnabled = false`
-2. **Overlay Layer** (`overlayPaths` state): Array of `{ id, points: [{x, y}], color, width }`
-   - Rendered with Canvas API strokes with round caps/joins
-   - Keep image smoothing enabled for anti-aliasing
-
-### Coordinate Systems
-
-- **Grid coordinates**: Integer positions `(x, y)` from `(0, 0)` to `(gridW-1, gridH-1)`
-- **Screen coordinates**: Convert via `getGridPos(e)` using `getBoundingClientRect()`
-- **Display scale**: `renderScale` auto-fits canvas to viewport, `scale` is user preference (4x-40x)
-
-### Drawing Flow
-
-```
-PointerDown → Push history → Begin drawing
-PointerMove → Update tempPreview (shapes) or apply pixels (freehand)
-PointerUp   → Commit final shape → Clear preview
+# Deploy (Cloudflare Pages)
+npm run deploy              # Preview deployment
+npm run deploy:production   # Production deployment
 ```
 
-## Code Conventions
+No test runner is configured. Verify changes manually with `npm run dev`.
 
-### Component Structure
+---
 
-- Use **functional components** with hooks throughout
-- Pass props explicitly (no context providers)
-- Forward canvas refs via `React.forwardRef`
+## Architecture
 
-### State Updates Pattern
+### Dual-Layer Canvas
 
-```javascript
-// ✅ Correct - immutable update
+Two overlapping `<canvas>` elements rendered in `Canvas.jsx`:
+
+1. **Pixel layer** — 2D array `pixels[y][x] = { r, g, b, a } | null`
+   - Rendered to `ImageData` via `renderPixelsToCanvas()` in `utils/canvas.js`
+   - `imageSmoothingEnabled = false` — never enable smoothing here
+2. **Overlay layer** — vector paths `[{ id, points:[{x,y}], color, width }]`
+   - Anti-aliased Canvas2D strokes; round caps/joins
+   - Used for Accent Pen fine details (whiskers, highlights)
+
+### State lives in `App.jsx` only
+
+No context providers. All state is passed as explicit props. Key state:
+
+```js
+pixels: Array[][]        // pixel data
+overlayPaths: Array[]    // vector paths
+history / future         // undo/redo stacks (deep copies)
+tool / color / alpha     // drawing controls
+tempPreview              // shape preview before commit
+curveTemps               // 3-click Bezier state
+renderScale              // auto-fit scale (read-only, derived)
+scale                    // user zoom preference (4–40, default 40)
+darkMode                 // theme toggle
+```
+
+### Drawing flow
+
+```
+PointerDown  → push history snapshot → begin stroke
+PointerMove  → update tempPreview (shapes) OR apply pixels (freehand)
+PointerUp    → commit final shape → clear preview / reset drag ref
+```
+
+Pointer tracking uses `useRef` (`dragStartRef`) — **do not switch to useState** for drag state; this avoids stale closure issues.
+
+### Rasterizers (`utils/rasterizers.js`)
+
+All shapes return `[x, y][]` coordinate arrays before pixel application:
+
+- `rasterLine` — Bresenham's algorithm
+- `rasterCircle` — midpoint circle algorithm
+- `rasterRect` / `fillRect` — outline or filled
+- `rasterQuad` — 200-step quadratic Bezier
+
+Always validate coords with `toInt()` and `validXY()` before writing pixels.
+
+### Coordinate systems
+
+- **Grid coords**: integers `(0,0)` → `(gridW-1, gridH-1)`
+- **Screen → grid**: `getGridPos(e)` via `getBoundingClientRect()`
+- **Display scale**: `renderScale` auto-fits to viewport; `scale` is user preference
+
+---
+
+## Conventions
+
+### Immutable state updates — always deep-copy pixels
+
+```js
+// ✅ Correct
 setPixels((prev) => {
   const copy = deepCopyPixels(prev);
-  copy[y][x] = newValue;
+  copy[y][x] = { r, g, b, a };
   return copy;
 });
 
-// ❌ Wrong - mutates state
-pixels[y][x] = newValue;
+// ❌ Wrong — mutates state in place
+pixels[y][x] = { r, g, b, a };
 setPixels(pixels);
 ```
 
-### Utility Functions
+### Component patterns
 
-- Write pure functions with defensive checks
-- Validate inputs with `toInt()`, `validXY()` from `utils/helpers.js`
-- Return empty arrays on invalid input (never throw exceptions)
-- Use null-safe operators (`?.`, `??`) for optional chains
+- Functional components with hooks throughout
+- `Canvas.jsx` uses `React.forwardRef` — maintain that pattern for canvas refs
+- No external state management libs (no Redux, Zustand, etc.)
 
-### Styling
+### Tauri / browser compatibility
 
-- Use **Tailwind CSS 4.x** for all styling (utility-first approach)
-- Follow existing glassmorphism patterns with `backdrop-blur`
-- Use emoji in button labels for visual clarity
-- Support dark/light mode with theme-aware colors
-- Light theme uses warm cream gradient (`#f6f1e5` to `#f1ebe0`)
-- Dark theme uses slate gradient (`slate-900` to `slate-800`)
+`utils/desktop.js` provides no-op stubs for browser. Always guard Tauri APIs:
 
-### Canvas Rendering
-
-- Always clear before redraw: `ctx.clearRect(0, 0, w, h)`
-- Use OffscreenCanvas when available for better performance
-
-## Development Workflow
-
-### Commands
-
-```bash
-npm install          # Install dependencies
-npm run dev          # Start dev server at http://localhost:1234 (auto-opens)
-npm run build        # Build production bundle to dist/
-npm run preview      # Preview production build
+```js
+if (typeof window !== "undefined" && window.__TAURI_INTERNALS__) {
+  // Tauri-specific code
+}
 ```
 
-### Adding New Tools
+### Adding new tools
 
-1. Add tool definition to `tools` array in `App.jsx`
-2. Handle in `handlePointerDown/Move/Up` switch statements
-3. Create rasterization function in `utils/rasterizers.js` if needed
-4. Update temp preview logic in `Canvas.jsx` for shapes using preview
+1. Add `{ id, label }` entry to `tools` array in `App.jsx`
+2. Handle `tool === 'yourTool'` in `handlePointerDown/Move/Up`
+3. Add rasterization logic to `utils/rasterizers.js` if needed
+4. Display controls in `ToolPanel.jsx`
 
-### Rasterization
+### Export formats
 
-All shapes convert to `[x, y]` coordinate arrays in `utils/rasterizers.js`:
+Export logic lives in `App.jsx`. All exports share `buildFlatCanvas()` which merges pixel + overlay layers into a single canvas for PNG/JPG output.
 
-- **Line**: Bresenham's algorithm (`rasterLine`)
-- **Circle**: Midpoint circle algorithm (`rasterCircle`)
-- **Rectangle**: `rasterRect` (outline) or `fillRect` (filled)
-- **Curve**: 200-step parametric Bezier (`rasterQuad`)
+---
 
-## File Structure & Responsibilities
+## Key Files
 
-- **`src/App.jsx`**: Main state container, event handlers, history, export logic
-- **`src/components/Canvas.jsx`**: Dual-canvas rendering, grid overlay, pointer events
-- **`src/components/ToolPanel.jsx`**: Tool selection UI, color picker, zoom/grid controls
-- **`src/components/ColorWheel.jsx`**: HSV color picker with click-to-select
-- **`src/components/ProjectPanel.jsx`**: Save/load/export interface
-- **`src/components/Header.jsx`**: App branding, dark/light mode toggle
-- **`src/components/Footer.jsx`**: Pink Pixel branding footer
-- **`src/utils/rasterizers.js`**: Shape-to-pixel algorithms
-- **`src/utils/canvas.js`**: Low-level canvas rendering helpers
-- **`src/utils/colors.js`**: Color space conversions, color wheel rendering
-- **`src/utils/helpers.js`**: Generic utilities, validation, deep copy
+| File                              | Responsibility                                           |
+| --------------------------------- | -------------------------------------------------------- |
+| `src/App.jsx`                     | All state, event handlers, history, export/import        |
+| `src/components/Canvas.jsx`       | Dual-canvas rendering + pointer events                   |
+| `src/components/ToolPanel.jsx`    | Tool selection, color wheel, zoom/grid controls          |
+| `src/components/ProjectPanel.jsx` | Save/load/export UI                                      |
+| `src/components/ColorWheel.jsx`   | HSV circular color picker                                |
+| `src/utils/rasterizers.js`        | Shape-to-pixel algorithms                                |
+| `src/utils/canvas.js`             | Canvas rendering helpers                                 |
+| `src/utils/colors.js`             | Hex ↔ RGBA ↔ HSV conversions                             |
+| `src/utils/helpers.js`            | `makeEmpty`, `deepCopyPixels`, `uid`, `clamp`, `validXY` |
+| `src/utils/storage.js`            | LocalStorage + Tauri store persistence                   |
+| `src/utils/desktop.js`            | Tauri menu event bridge (no-ops in browser)              |
+| `src-tauri/src/main.rs`           | Tauri entry point + native app menu                      |
 
-## Important Patterns
+---
 
-### Color Management
+## Pitfalls
 
-- Use utilities from `utils/colors.js`:
-  - `hexToRGBA(hex, alpha)` → `{ r, g, b, a }`
-  - `rgbaToHex({ r, g, b })` → `"#rrggbb"`
-  - `hsvToRgb(h, s, v)` → `{ r, g, b }`
+- **Never enable `imageSmoothingEnabled`** on the pixel canvas — it blurs pixel art
+- **Always deep-copy** `pixels` before mutation — shallow copies cause undo bugs
+- **`renderScale` is derived, not set directly** — it auto-computes to fit viewport
+- **Curve tool needs 3 clicks** — `curveTemps` must reach length 2 before committing
+- **Tauri `NO_STRIP=YES`** is required in `tauri:build` to avoid AppImage bundling failures on modern Linux (linuxdeploy strip incompatibility)
+- **Port 1234** — Vite dev server is hardcoded to 1234 (not 5173)
+- **LocalStorage namespace**: `gumdrop:projects` — don't change without migrating existing data
 
-### Project Persistence
+---
 
-- LocalStorage namespace: `gumdrop:projects`
-- Schema: `{ id, name, updated, gridW, gridH, pixels, overlayPaths }`
-- Use `listProjects()`, `saveProject()`, `loadProject()`, `deleteProject()`
+## Branding & Style
 
-### Performance
-
-- Pixel operations are O(n) where n = gridW × gridH
-- Deep copying entire pixel array is acceptable for small canvases (≤128×128)
-- Practical canvas limit: ~256×256 pixels
-- Consider dirty rectangle tracking for larger canvases
-- Overlay paths render independently—no pixel overhead
-
-## Export Formats
-
-- **PNG**: Transparent/opaque background for web graphics, sprites
-- **JPG**: Opaque background, smaller file size for photos
-- **SVG**: Pixels as `<rect>`, paths as `<polyline>` for scalable graphics
-- **JSON**: Complete state data for backup/sharing/re-editing
-- **HTML**: Self-contained canvas renderer for embeddable demos
-
-## Testing & Quality
-
-- Ensure all changes maintain immutable state patterns
-- Test tool interactions with pointer events
-- Verify canvas rendering for both pixel and overlay layers
-- Test export functionality across all formats
-- Validate color conversions and transparency handling
-- Check dark/light mode appearance for all UI changes
-
-## Branding
-
+- **Owner**: Pink Pixel — pinkpixel.dev / @pinkpixel-dev
+- **Default color**: `#ff66cc`
+- **UI style**: Glassmorphism — `backdrop-blur`, `ring-white/10`, `rounded-xl`
+- **Theme**: Pink/purple/indigo gradients; emoji-driven labels
 - **Signature**: "Made with 💗 by Pink Pixel"
-- **Color theme**: Pink (`#ff66cc`) + Purple + Indigo
-- **Tagline**: "Dream it, Pixel it ✨"
-- Maintain friendly, delightful tone in UI text
+- Tailwind CSS 4 utility-first — no custom CSS unless necessary
