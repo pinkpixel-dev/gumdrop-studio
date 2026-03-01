@@ -8,14 +8,15 @@
 
 **An easy to use pixel art creation app**
 
-[![React](https://img.shields.io/badge/React-19.2.0-61dafb?style=flat&logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.1.12-646cff?style=flat&logo=vite)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.16-06b6d4?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![React](https://img.shields.io/badge/React-19.2.4-61dafb?style=flat&logo=react)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.1-646cff?style=flat&logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.18-06b6d4?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![Tauri](https://img.shields.io/badge/Tauri-2.x-ffc131?style=flat&logo=tauri)](https://tauri.app/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-*Create adorable pixel art with a unique dual-layer canvas system!*
+_Create adorable pixel art with a unique dual-layer canvas system!_
 
-[Features](#-features) • [Getting Started](#-getting-started) • [Usage](#-usage) • [Export](#-export-options) • [Tech Stack](#%EF%B8%8F-tech-stack)
+[Features](#-features) • [Getting Started](#-getting-started) • [Desktop App](#-desktop-app-tauri) • [Usage](#-usage) • [Export](#-export-options) • [Tech Stack](#%EF%B8%8F-tech-stack)
 
 </div>
 
@@ -24,6 +25,7 @@
 ## ✨ Features
 
 ### 🎨 Dual-Layer Canvas System
+
 The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then add fine details like whiskers, smiles, or highlights on a smooth vector overlay layer.
 
 - **Pixel Layer**: Crisp, blocky RGBA pixel array (perfect for sprites)
@@ -31,16 +33,16 @@ The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then
 
 ### 🛠️ Drawing Tools
 
-| Tool | Description |
-|------|-------------|
+| Tool               | Description                                      |
+| ------------------ | ------------------------------------------------ |
 | ⬛ **Pixel Stamp** | Place a single pixel with live preview (default) |
-| 🖊️ **Pencil** | Freehand pixel drawing |
-| 🧽 **Eraser** | Remove pixels |
-| 📏 **Line** | Straight lines with Bresenham algorithm |
-| ▭ **Rectangle** | Outline or filled boxes |
-| ◯ **Circle** | Perfect circles with midpoint algorithm |
-| ☾ **Curve** | Smooth quadratic Bezier curves (3-click) |
-| ✨ **Accent Pen** | Thin vector lines for fine details |
+| 🖊️ **Pencil**      | Freehand pixel drawing                           |
+| 🧽 **Eraser**      | Remove pixels                                    |
+| 📏 **Line**        | Straight lines with Bresenham algorithm          |
+| ▭ **Rectangle**    | Outline or filled boxes                          |
+| ◯ **Circle**       | Perfect circles with midpoint algorithm          |
+| ☾ **Curve**        | Smooth quadratic Bezier curves (3-click)         |
+| ✨ **Accent Pen**  | Thin vector lines for fine details               |
 
 ### 🌈 Advanced Color System
 
@@ -70,21 +72,23 @@ The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then
 
 ### Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **npm** or **yarn**
+
+> **For the desktop app (Tauri):** also requires Rust. See [Desktop App](#-desktop-app-tauri) below.
 
 ### Installation
 
 ```bash
 # Clone the repository (or download)
-git clone <your-repo-url>
+git clone https://github.com/pinkpixel-dev/gumdrop-studio
 cd gumdrop-studio
 
 # Install dependencies
 npm install
 ```
 
-### Development
+### Development (Browser)
 
 ```bash
 npm run dev
@@ -105,6 +109,58 @@ Outputs optimized bundle to `dist/` directory.
 ```bash
 npm run preview
 ```
+
+---
+
+## 🖥️ Desktop App (Tauri)
+
+Gumdrop Studio ships as a full **native desktop app** powered by [Tauri 2](https://tauri.app/). The desktop build adds:
+
+- **Native window** with full app menu (File, Edit, View, Help)
+- **Keyboard shortcuts** wired through the OS menu (Ctrl+N, Ctrl+S, Ctrl+Z, etc.)
+- **AppImage & .deb installers** for Linux
+- **File system & dialog access** via Tauri plugins
+
+### Desktop Prerequisites
+
+Install Rust:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+On Linux, also install the required system libraries:
+
+```bash
+# Arch Linux
+sudo pacman -S webkit2gtk-4.1 libappindicator-gtk3 librsvg
+
+# Ubuntu / Debian
+sudo apt install libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+```
+
+### Run Desktop Dev Build
+
+```bash
+npm run tauri:dev
+```
+
+### Build Desktop Installers
+
+```bash
+npm run tauri:build
+```
+
+Builds both an **AppImage** and a **.deb** package to:
+
+```
+src-tauri/target/release/bundle/
+  appimage/  Gumdrop Studio_1.1.0_amd64.AppImage
+  deb/       Gumdrop Studio_1.1.0_amd64.deb
+```
+
+- **AppImage** — portable, runs on any Linux without installing. Just `chmod +x` and run.
+- **.deb** — install with `sudo dpkg -i "Gumdrop Studio_1.1.0_amd64.deb"`
 
 ---
 
@@ -130,13 +186,13 @@ npm run preview
 
 ## 📤 Export Options
 
-| Format | Description | Use Case |
-|--------|-------------|----------|
-| **PNG** 🖼️ | Transparent or opaque background | Web graphics, game sprites |
-| **JPG** 📷 | Opaque background, smaller file size | Backgrounds, photos |
-| **SVG** 🎨 | Vector format (scalable) | Logos, scalable graphics |
-| **JSON** 📦 | Complete state data | Backup, sharing, re-editing |
-| **HTML** 🌐 | Self-contained renderer | Embeddable demos, portfolios |
+| Format      | Description                          | Use Case                     |
+| ----------- | ------------------------------------ | ---------------------------- |
+| **PNG** 🖼️  | Transparent or opaque background     | Web graphics, game sprites   |
+| **JPG** 📷  | Opaque background, smaller file size | Backgrounds, photos          |
+| **SVG** 🎨  | Vector format (scalable)             | Logos, scalable graphics     |
+| **JSON** 📦 | Complete state data                  | Backup, sharing, re-editing  |
+| **HTML** 🌐 | Self-contained renderer              | Embeddable demos, portfolios |
 
 ---
 
@@ -160,12 +216,18 @@ gumdrop-studio/
 │   ├── utils/
 │   │   ├── canvas.js       # Canvas rendering helpers
 │   │   ├── colors.js       # Color conversions
+│   │   ├── desktop.js      # Tauri menu event listeners
 │   │   ├── helpers.js      # Generic utilities
-│   │   └── rasterizers.js  # Shape algorithms
+│   │   ├── rasterizers.js  # Shape algorithms
+│   │   └── storage.js      # Project persistence (localStorage + Tauri store)
 │   ├── App.jsx             # Main app logic
 │   ├── index.css           # Global styles
 │   └── main.jsx            # React entry
-├── DEVELOPMENT.md          # Development guidance
+├── src-tauri/
+│   ├── src/main.rs         # Tauri app + native menu
+│   ├── Cargo.toml          # Rust dependencies
+│   ├── tauri.conf.json     # Tauri window + bundle config
+│   └── icons/              # App icons (PNG, ICO, ICNS)
 ├── OVERVIEW.md             # Comprehensive docs
 ├── CHANGELOG.md            # Version history
 ├── SETUP.md                # Quick setup guide
@@ -178,20 +240,20 @@ gumdrop-studio/
 
 ## 🛠️ Tech Stack
 
-- **React 19.2.0** - Modern UI framework with latest features
-- **Vite 7.1.12** - Lightning-fast build tool and dev server
-- **Tailwind CSS 4.1.16** - Utility-first styling with latest improvements
+- **React 19.2.4** - Modern UI framework with latest features
+- **Vite 7.3.1** - Lightning-fast build tool and dev server
+- **Tailwind CSS 4.1.18** - Utility-first styling with latest improvements
+- **Tauri 2.x** - Native desktop app framework (Rust-powered)
 - **Canvas API** - Native HTML5 rendering (pixel-perfect + anti-aliased)
-- **Wrangler 4.64.0** - Cloudflare Pages deployment tool
+- **Wrangler 4.65.0** - Cloudflare Pages deployment tool
 
-*All dependencies are **latest stable versions** as of February 2026.*
+_All dependencies are **latest stable versions** as of March 2026._
 
 ---
 
 ## 📚 Documentation
 
 - **[OVERVIEW.md](OVERVIEW.md)** - Comprehensive technical documentation
-- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Development guidance and architecture
 - **[SETUP.md](SETUP.md)** - Quick setup guide
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
 - **README.md** (this file) - Quick start guide
@@ -215,7 +277,7 @@ Please ensure code follows existing patterns and conventions.
 
 **Apache License 2.0** - See [LICENSE](LICENSE) for details.
 
-Copyright © 2025 Pink Pixel
+Copyright © 2026 Pink Pixel
 
 ---
 
@@ -234,7 +296,7 @@ Copyright © 2025 Pink Pixel
 
 ### ✨ Dream it, Pixel it ✨
 
-*Made with 💗 by Pink Pixel*
+_Made with 💗 by Pink Pixel_
 
 **Now go draw some pixelated kittens!** 🐱
 

@@ -2,6 +2,24 @@
 
 All notable changes to **Gumdrop Studio** are documented here.
 
+## 2026-03-01 — v1.1.0
+
+- Added **Tauri 2 desktop app** — Gumdrop Studio now ships as a native desktop application
+- Native app menu (File, Edit, View, Help) with keyboard shortcuts (Ctrl+N, Ctrl+S, Ctrl+Z, Ctrl+G, etc.)
+- Export submenu in desktop menu bar for all five formats (PNG, JPG, SVG, JSON, HTML)
+- Added `src-tauri/` with `main.rs`, `Cargo.toml`, `tauri.conf.json`, and app icons
+- Added `src/utils/desktop.js` for Tauri menu event bridge
+- Added `src/utils/storage.js` for unified project persistence (localStorage / Tauri store)
+- Added `npm run tauri:dev` and `npm run tauri:build` scripts
+- Desktop build outputs AppImage + .deb installers to `src-tauri/target/release/bundle/`
+- Fixed invalid JSON and stray code blocks in `tauri.conf.json` and `Cargo.toml`
+- Fixed `split-debuginfo` placeholder values in `Cargo.toml`
+- Fixed AppImage bundling on modern systems with `NO_STRIP=YES` (old linuxdeploy strip incompatibility)
+- Updated bundle category to `Graphics and Design`
+- Set desktop window to 1800×1400 (default)
+- Bumped all dependencies to latest: React 19.2.4, Vite 7.3.1, Tailwind 4.1.18, Wrangler 4.65.0
+- Updated all documentation to reflect Tauri desktop architecture
+
 ## 2026-02-11
 
 - Configured project for **Cloudflare Pages** deployment with Wrangler

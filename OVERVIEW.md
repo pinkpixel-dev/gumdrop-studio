@@ -1,9 +1,9 @@
 # 🧁 Gumdrop Studio — Project Overview
 
-**Last Updated:** February 11, 2026  
-**Version:** 1.0.0  
+**Last Updated:** March 1, 2026  
+**Version:** 1.1.0  
 **Status:** Production Ready ✨  
-**Deployment:** Cloudflare Pages with Wrangler
+**Deployment:** Cloudflare Pages (browser) + Tauri 2 (desktop)
 
 ---
 
@@ -18,6 +18,7 @@ The app offers a complete set of drawing tools, flexible export options, and pro
 ## 🎯 Core Purpose
 
 Create adorable pixel art with ease! Gumdrop Studio is designed for:
+
 - **Digital artists** who want a quick, browser-based pixel art tool
 - **Game developers** needing sprite creation and editing
 - **Hobbyists** looking to make cute pixel pets, icons, or avatars
@@ -31,15 +32,17 @@ The dual-layer system is the killer feature: draw blocky pixel art on one layer,
 
 ### Tech Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **React** | 19.2.0 | UI framework |
-| **Vite** | 7.1.12 | Build tool & dev server |
-| **Tailwind CSS** | 4.1.16 | Styling framework |
-| **@tailwindcss/postcss** | 4.1.16 | PostCSS plugin |
-| **Autoprefixer** | 10.4.21 | CSS vendor prefixing |
+| Technology               | Version | Purpose                      |
+| ------------------------ | ------- | ---------------------------- |
+| **React**                | 19.2.4  | UI framework                 |
+| **Vite**                 | 7.3.1   | Build tool & dev server      |
+| **Tailwind CSS**         | 4.1.18  | Styling framework            |
+| **@tailwindcss/postcss** | 4.1.18  | PostCSS plugin               |
+| **Tauri**                | 2.x     | Native desktop app framework |
+| **Rust**                 | stable  | Tauri backend language       |
+| **Autoprefixer**         | 10.4.24 | CSS vendor prefixing         |
 
-All dependencies are **latest stable versions** as of October 2025.
+All dependencies are **latest stable versions** as of March 2026.
 
 ### Project Structure
 
@@ -61,13 +64,20 @@ gumdrop-studio/
 │   ├── utils/
 │   │   ├── canvas.js       # Canvas rendering helpers
 │   │   ├── colors.js       # Color space conversions
+│   │   ├── desktop.js      # Tauri menu event listeners (noop in browser)
 │   │   ├── helpers.js      # Generic utilities
-│   │   └── rasterizers.js  # Shape-to-pixel algorithms
+│   │   ├── rasterizers.js  # Shape-to-pixel algorithms
+│   │   └── storage.js      # Project persistence (localStorage / Tauri store)
 │   ├── App.jsx             # Main app state + logic
 │   ├── index.css           # Global styles
 │   └── main.jsx            # React entry point
+├── src-tauri/
+│   ├── src/main.rs         # Tauri entry point + native menu
+│   ├── Cargo.toml          # Rust dependencies
+│   ├── tauri.conf.json     # Window size, bundle, permissions
+│   └── icons/              # App icons (PNG, ICO, ICNS)
 ├── index.html              # Vite entry HTML
-├── package.json            # Dependencies + deploy scripts
+├── package.json            # Dependencies + scripts
 ├── vite.config.js          # Vite config (port 1234)
 ├── tailwind.config.js      # Tailwind config
 ├── postcss.config.js       # PostCSS config
@@ -81,16 +91,16 @@ gumdrop-studio/
 
 ### Drawing Tools
 
-| Tool | Description | Implementation |
-|------|-------------|----------------|
+| Tool               | Description                                   | Implementation                                  |
+| ------------------ | --------------------------------------------- | ----------------------------------------------- |
 | **Pixel Stamp** ⬛ | Precise single-pixel placement (default tool) | Uses shape preview flow for single cell commits |
-| **Pencil** 🖊️ | Freehand pixel drawing | Direct pixel modification |
-| **Eraser** 🧽 | Remove pixels | Sets pixels to `null` |
-| **Line** 📏 | Straight lines | Bresenham's algorithm |
-| **Rectangle** ▭ | Outline or filled boxes | Rasterization with fill toggle |
-| **Circle** ◯ | Perfect circles | Midpoint circle algorithm |
-| **Curve** ☾ | Smooth Bezier curves | 3-click quadratic Bezier (200 steps) |
-| **Accent Pen** ✨ | Thin vector lines | Overlay layer with anti-aliasing |
+| **Pencil** 🖊️      | Freehand pixel drawing                        | Direct pixel modification                       |
+| **Eraser** 🧽      | Remove pixels                                 | Sets pixels to `null`                           |
+| **Line** 📏        | Straight lines                                | Bresenham's algorithm                           |
+| **Rectangle** ▭    | Outline or filled boxes                       | Rasterization with fill toggle                  |
+| **Circle** ◯       | Perfect circles                               | Midpoint circle algorithm                       |
+| **Curve** ☾        | Smooth Bezier curves                          | 3-click quadratic Bezier (200 steps)            |
+| **Accent Pen** ✨  | Thin vector lines                             | Overlay layer with anti-aliasing                |
 
 ### Color System
 
@@ -120,13 +130,13 @@ gumdrop-studio/
 
 ### Export Formats
 
-| Format | Description | Use Case |
-|--------|-------------|----------|
-| **PNG** | Transparent or opaque background | Web graphics, sprites |
-| **JPG** | Opaque background, smaller file size | Photos, backgrounds |
-| **SVG** | Vector format (pixels as `<rect>`, paths as `<polyline>`) | Scalable graphics |
-| **JSON** | Complete state data | Backup, sharing, editing |
-| **HTML Snippet** | Self-contained canvas renderer | Embeddable demos |
+| Format           | Description                                               | Use Case                 |
+| ---------------- | --------------------------------------------------------- | ------------------------ |
+| **PNG**          | Transparent or opaque background                          | Web graphics, sprites    |
+| **JPG**          | Opaque background, smaller file size                      | Photos, backgrounds      |
+| **SVG**          | Vector format (pixels as `<rect>`, paths as `<polyline>`) | Scalable graphics        |
+| **JSON**         | Complete state data                                       | Backup, sharing, editing |
+| **HTML Snippet** | Self-contained canvas renderer                            | Embeddable demos         |
 
 ### History System
 
@@ -164,13 +174,15 @@ curveTemps: Array[]          // Curve tool state (3-click)
 ```
 
 **Deep Copying Pattern:**
+
 ```javascript
-setPixels(prev => {
+setPixels((prev) => {
   const copy = deepCopyPixels(prev);
   copy[y][x] = newValue;
   return copy;
 });
 ```
+
 Pointer tracking for tools such as Pixel Stamp and Pencil relies on `useRef` (`dragStartRef`) so cursor updates don't wait for React renders, eliminating streak artifacts when switching cells quickly.
 
 ### Rendering System
@@ -188,6 +200,7 @@ Pointer tracking for tools such as Pixel Stamp and Pencil relies on `useRef` (`d
    - Positioned absolutely on top of pixel canvas
 
 **Drawing Flow:**
+
 ```
 PointerDown → Push history → Begin drawing
 PointerMove → Update tempPreview (shapes) or apply pixels (freehand)
@@ -204,6 +217,7 @@ All shapes convert to `[x, y]` coordinate arrays before applying:
 - **Curve:** 200-step parametric Bezier (`rasterQuad`)
 
 Example from `rasterizers.js`:
+
 ```javascript
 export function rasterLine(x0, y0, x1, y1) {
   const coords = [];
@@ -225,12 +239,14 @@ export function rasterLine(x0, y0, x1, y1) {
 ### Color Management
 
 **Utilities in `colors.js`:**
+
 - `hexToRGBA(hex, alpha)` → `{ r, g, b, a }`
 - `rgbaToHex({ r, g, b })` → `"#rrggbb"`
 - `hsvToRgb(h, s, v)` → `{ r, g, b }`
 - `drawColorWheel(canvas)` → Renders HSV picker
 
 **Color Picker Algorithm:**
+
 ```javascript
 // HSV picker: hue = angle, saturation = distance from center
 const hue = (Math.atan2(dy, dx) / (2 * Math.PI) + 1) % 1;
@@ -240,6 +256,7 @@ const sat = distance / radius;
 ### Data Persistence
 
 **LocalStorage Schema:**
+
 ```json
 {
   "id": "abc123",
@@ -271,6 +288,7 @@ const sat = distance / radius;
 ### Layout
 
 **3-Column Responsive Grid:**
+
 ```
 [ToolPanel] [Canvas] [ProjectPanel]
    300px      1fr        280px
@@ -294,7 +312,7 @@ On mobile/tablet: Stacks vertically
 npm install
 ```
 
-### Development
+### Development (Browser)
 
 ```bash
 npm run dev
@@ -302,13 +320,32 @@ npm run dev
 
 Opens at **http://localhost:1234** (auto-opens browser)
 
-### Build
+### Development (Desktop)
+
+```bash
+npm run tauri:dev
+```
+
+Launches the Tauri desktop window with hot reload.
+
+### Build (Web)
 
 ```bash
 npm run build
 ```
 
 Output: `dist/` directory
+
+### Build (Desktop Installers)
+
+```bash
+npm run tauri:build
+```
+
+Output: `src-tauri/target/release/bundle/`
+
+- `appimage/` — portable AppImage
+- `deb/` — Debian/Ubuntu package
 
 ### Preview Production Build
 
@@ -324,6 +361,7 @@ npm run deploy:production   # Deploy to production
 ```
 
 Or deploy manually:
+
 ```bash
 wrangler pages deploy dist
 ```
@@ -339,14 +377,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 1234,
-    open: true
-  }
+    open: true,
+  },
 });
 ```
 
 ### Tailwind Config (`tailwind.config.js`)
 
 Uses default theme, scans:
+
 - `./index.html`
 - `./src/**/*.{js,ts,jsx,tsx}`
 
@@ -358,9 +397,14 @@ Uses default theme, scans:
 
 ```json
 {
-  "@tailwindcss/postcss": "^4.1.16",
-  "react": "^19.2.0",
-  "react-dom": "^19.2.0"
+  "@tauri-apps/api": "^2.10.1",
+  "@tauri-apps/plugin-dialog": "^2.6.0",
+  "@tauri-apps/plugin-fs": "^2.4.5",
+  "@tauri-apps/plugin-shell": "^2.3.5",
+  "@tauri-apps/plugin-store": "^2.4.2",
+  "@tailwindcss/postcss": "^4.1.18",
+  "react": "^19.2.4",
+  "react-dom": "^19.2.4"
 }
 ```
 
@@ -368,11 +412,12 @@ Uses default theme, scans:
 
 ```json
 {
-  "@vitejs/plugin-react": "^5.1.0",
-  "autoprefixer": "^10.4.21",
-  "tailwindcss": "^4.1.16",
-  "vite": "^7.1.12",
-  "wrangler": "^4.64.0"
+  "@tauri-apps/cli": "^2.10.0",
+  "@vitejs/plugin-react": "^5.1.4",
+  "autoprefixer": "^10.4.24",
+  "tailwindcss": "^4.1.18",
+  "vite": "^7.3.1",
+  "wrangler": "^4.65.0"
 }
 ```
 
@@ -421,9 +466,10 @@ Uses default theme, scans:
 ### State Updates
 
 Always immutable:
+
 ```javascript
 // ✅ Correct
-setPixels(prev => {
+setPixels((prev) => {
   const copy = deepCopyPixels(prev);
   copy[y][x] = newValue;
   return copy;

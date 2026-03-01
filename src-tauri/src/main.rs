@@ -112,7 +112,7 @@ fn main() {
                     "about" => {
                         use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
                         let _ = app.dialog()
-                            .message("Gumdrop Studio v1.0.0\n\nA fun pixel art creation app with dual-layer canvas.\n\nMade with ❤️ by Pink Pixel\nhttps://pinkpixel.dev")
+                            .message("Gumdrop Studio v1.1.0\n\nA fun pixel art creation app with dual-layer canvas.\n\nMade with ❤️ by Pink Pixel\nhttps://pinkpixel.dev")
                             .kind(MessageDialogKind::Info)
                             .title("About Gumdrop Studio")
                             .blocking_show();
