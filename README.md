@@ -1,12 +1,12 @@
 <div align="center">
 
 <p align="center">
-    <img src="public/logo.png" alt="Gumdrop Studio" width="300">
+    <img src="./logo.png" alt="Gumdrop Studio" width="300">
 </p>
 
-# 🧁 Gumdrop Studio
+# 🍬 Gumdrop Studio 🍭
 
-**A fun, easy to use, browser-based pixel art creation app**
+**An easy to use pixel art creation app**
 
 [![React](https://img.shields.io/badge/React-19.2.0-61dafb?style=flat&logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.12-646cff?style=flat&logo=vite)](https://vitejs.dev/)

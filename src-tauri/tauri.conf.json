@@ -13,10 +13,10 @@
     "windows": [
       {
         "title": "Gumdrop Studio",
-        "width": 900,
-        "height": 1200,
-        "minWidth": 900,
-        "minHeight": 900,
+        "width": 1500,
+        "height": 950,
+        "minWidth": 1500,
+        "minHeight": 950,
         "resizable": true,
         "fullscreen": false,
         "decorations": true,
@@ -47,14 +47,6 @@
           ]
         }
       ]
-  },
-  plugins: {
-    updater: {
-      pubkey: 'updater pub key',
-      endpoints: ['https://my.app.updater/{{target}}/{{current_version}}'],
-    },
-  },
-}
     }
   },
   "bundle": {

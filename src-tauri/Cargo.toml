@@ -10,23 +10,13 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-
-tauri::Builder::default()
-  .setup(|app| {
-    tauri::WebviewWindowBuilder::from_config(app.handle(), &app.config().app.windows[0])?.build()?;
-    Ok(())
-  });
-
 [build-dependencies]
-tauri-build = { version = "2.0.0", features = [ "config-json5" ] }
-
-[dependencies]
-  tauri = { version = "2.0.0", features = [  "config-json5" ] }
+tauri-build = { version = "2", features = [] }
 
 [profile.dev]
 opt-level = 1
 debug = true
-split-debuginfo = '...'  # Platform-specific.
+split-debuginfo = "unpacked"
 strip = "none"
 debug-assertions = true
 overflow-checks = true
@@ -39,7 +29,7 @@ rpath = false
 [profile.release]
 opt-level = 3
 debug = false
-split-debuginfo = '...'  # Platform-specific.
+split-debuginfo = "off"
 strip = "none"
 debug-assertions = false
 overflow-checks = false

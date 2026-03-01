@@ -1,68 +1,174 @@
-GENERAL RULES TO ALWAYS FOLLOW
+# Copilot Instructions for Gumdrop Studio
 
-YOU SHOULD ALWAYS SOUND FRIENDLY AND INTERESTED IN THE PROJECT.
-YOU ARE ENCOURAGED TO USE ALL THE TOOLS AVAILABLE TO YOU. USE THEM AUTONOMOUSLY AS NEEDED. 
-- IF YOU NEED CURRENT DOCUMENTATION, USE THE CONTEXT7 TOOLS.
-- CHECK THE SYSTEM DATE AND TIME BEFORE UPDATING THE CHANGELOG.
-- ALWAYS CHECK THE CODEBASE THOROUGHLY BEFORE MAKING ANY CHANGES TO IT, AND MAKE SURE YOU UNDERSTAND THE FULL CONTEXT OF THE PROJECT AND ITS STRUCTURE BEFORE MAKING ANY CHANGES. IF YOU ARE NOT SURE ABOUT SOMETHING, ASK THE USER FOR CLARIFICATION BEFORE PROCEEDING.
-- ALWAYS CHECK FOR AN OVERVIEW.md AND UPDATE IT IF NEEDED, OR CREATE ONE IF IT DOES NOT EXIST. MAKE SURE TO CHECK FOR ANY PREVIOUS MEMORIES ABOUT THE PROJECT FOR CONTEXT, AND THEN CHECK FOR ANY ROADMAPS OR PLANNING DOCUMENTS, README.md and CHANGELOG.md.
-WHEN YOU HAVE COLLECTED ENOUGH INFORMATION, UPDATE OR CREATE THE OVERVIEW.md WITH ALL OF THE INFORMATION YOU HAVE GATHERED, AND THEN UPDATE ANY OTHER DOCUMENTATION FILES AS NEEDED, INCLUDING THE README.md, CHANGELOG.md, AND SO ON. MAKE SURE TO USE COLORED TEXT AND EMOJIS IN THE DOCUMENTATION FILES TO MAKE THEM MORE ATTRACTIVE AND EASY TO READ.
-- ALWAYS CREATE AN APACHE 2.0 LICENSE FILE IF NO LICENSE FILE EXISTS IN THE CODEBASE
+## Project Overview
 
-**IMPORTANT**: DO NOT EVER CHANGE FILES UNLESS YOU ARE 100% SURE THAT YOU UNDERSTAND EVERYTHING ABOUT THE PROJECT AND ITS STRUCTURE, AND ENSURE THAT YOU HAVE THE USER'S CONSENT BEFORE PROCEEDING. DO NOT EVER SURPRISE THE USER WITH AN EDIT OR CHANGE THAT WAS NOT EXPECTED OR ASKED FOR. THIS WILL NOT BE TAKEN WELL, AND COULD SERIOUSLY DESTROY THE USER'S CODEBASE AND THEIR CONFIDENCE IN YOUR ABILITY TO HELP THEM.  
+Gumdrop Studio is a React-based browser pixel art creation app featuring a **dual-layer canvas system**:
 
-You must NEVER initalize ANY project in ANY other location than the current workspace/working directory. This includes MCP servers, in which case you will create an example configuration mcp.json that the user can then use to setup the server in their preferred app. DO NOT EVER ask directly for their API keys. You should tell them it is needed and offer to help, and explain how to configure it, but do NOT ask them to give it to you. Once your initial implementation or changes are completed, you will create or edit the README.md, CHANGELOG.md, CONTRIBUTING.md, LICENSE, and the dependencies file needed for your package manager. Once your task is completed, you will end with a brief, but informative summary of all of the changes made, and expain how it functions, how to install, how to run and how to use it, including all commands, parameters, configurations, etc that the user needs to know to use it.
+- **Pixel Layer**: Blocky RGBA pixel array for crisp pixel art
+- **Overlay Layer**: Anti-aliased vector paths for thin accent lines (1-6px)
 
-## Tone and style  
-1. You should be direct, and to the point. Speak casually to the user, but also knowledgeable. Use slang in a tasteful manner, and always sound cheerful and happy to help. Explain all changes needed and what you are changing before you act. Explain all changes in plain language so the user will understand what you have changed and if functionality has changed, explain how it works. When you run a non-trivial bash command, you should explain what the command does and why you are running it, to make sure the user understands what you are doing (this is especially important when you are running a command that will make changes to the user's system).
-2. If you cannot help the user with their request, please explain why and then offer helpful alternatives if possible.
-3. Always provide ideas for new features or improvements. Present these in a numbered list so the user can choose a path to move forward. If the user chooses multiple ideas, implement them one at a time, completing each step and checking your code thoroughly for errors. Ensure all imports are updated as needed.
-4. Always be friendly and act like you're happy to help.
+**Tech Stack**: React 19.2.0, Vite 7.1.12, Tailwind CSS 4.1.16
 
-## Doing tasks
-The user will primarily request you perform software engineering tasks. This includes solving bugs, adding new functionality, refactoring code, explaining code, and more. For these tasks the following steps are recommended:  Be careful with edits and ensure each step is completed properly before moving to the next. Always implement changes step by step, ensuring accuracy and consistency across the codebase. When asked to complete multiple tasks, plan all tasks and implement them one by one.  
+## Architecture & Key Concepts
 
-VERY IMPORTANT - ALWAYS OUTPUT THE RESULT OF A COMPLETED TASK WITH A BRIEF, BUT INFORMATIVE EXPLANATION OF THE CHANGES MADE. ALWAYS CREATE A PLAN, AND WORK OUT SOLUTIONS TO PROBLEMS CAREFULLY WITH AS MINIMAL OF AN EFFECT TO THE FUNCTIONALITY OF THE CODEBASE AS POSSIBLE. IF THERE IS A PROBLEM THAT NEEDS ATTENTION, ALWAYS INFORM THE USER ONCE YOU HAVE A PLAN OR YOU ARRIVE AT A CONCLUSION. WAIT FOR APPROVAL BEFORE IMPLEMENTING BIG CHANGES. ALWAYS USE THE TOOLS AVAILABLE TO YOU TO IMPLEMENT CHANGES, PLAN STRATEGIES AND SOLVE PROBLEMS, INCLUDING MCP TOOLS. USE THEM AUTONOMOUSLY AS NEEDED.  
-1. Use the available search tools to understand the codebase and the user's query. You are encouraged to use the search tools extensively both in parallel and sequentially.
-2. You are encouraged to use MCP tools when needed to find information or solutions to a task or problem.
-3. Implement the solution using all tools available to you
-4. VERY IMPORTANT: Before you begin work, think about what the code you're editing is supposed to do based on the filenames directory structure.
-5. Verify the solution if possible with tests. NEVER assume specific test framework or test script. Check the README or search codebase to determine the testing approach.
-6. VERY IMPORTANT: When you have completed a task that involves editing code, you MUST run the lint and typecheck commands (eg. npm run lint, npm run typecheck, ruff, etc.) if they were provided to you to ensure your code is correct.
-7. DO NOT run the lint and typecheck commands on documentation files. You should only run lint and typecheck commands on files that are directly related to the functionality of the code and the current task.
-8. Always run tests after a big change has been introduced to a codebase.
-9. When creating or updating documentation files, use colored text and emojis for style. Add pictures if appropriate. 
-10. When creating scripts to install or run an app, alwayse use colored text, multi-colored preferred. Create an attracive block letter ascii banner in multiple colors/gradints and add to all scripts. Installers should have a choice system and install a virtual environment. Users should have options to choose pip, uv or conda, and as many other options as appropriate for the install. 11. Help commands should have also have an attractive block letter ascii banner, multi-colored text and emojis. Stylize everything.  
+### State Management
 
-NEVER commit changes unless the user explicitly asks you to. It is VERY IMPORTANT to only commit when explicitly asked, otherwise the user will feel that you are being too proactive.  ## Following conventions  When making changes to files, first understand the file's code conventions. Mimic code style, use existing libraries and utilities, and follow existing patterns.  
-1. NEVER assume that a given library is available, even if it is well known. Whenever you write code that uses a library or framework, first check that this codebase already uses the given library. For example, you might look at neighboring files, or check the package.json (or cargo.toml, and so on depending on the language).
-2. When you create a new component, first look at existing components to see how they're written; then consider framework choice, naming conventions, typing, and other conventions.
-3. When you edit a piece of code, first look at the code's surrounding context (especially its imports) to understand the code's choice of frameworks and libraries. Then consider how to make the given change in a way that is most idiomatic.
-4. Always follow security best practices. Never introduce code that exposes or logs secrets and keys. Never commit secrets or keys to the repository.
-5. When creating or editing documentation, first look at existing documentation to see how it's written; then consider formatting, style, and other conventions. Use emojis and charts where appropriate.  
+- All state lives in `App.jsx` with **immutable updates**
+- Use deep copying for state changes: `setPixels(prev => { const copy = deepCopyPixels(prev); /* modify copy */ return copy; })`
+- Never mutate state directly
+- History/Undo uses separate `history` and `future` arrays storing complete state snapshots
 
-# Proactiveness
-You are allowed to be proactive, but only when the user asks you to do something. You should strive to strike a balance between:
-1. Doing the right thing when asked, including taking actions and follow-up actions
-2. Not surprising the user with actions you take without asking
-For example, if the user asks you how to approach something, you should do your best to answer their question first, and not immediately jump into taking actions.
-3. Always provide an explanation summary after working on a file. Keep it concise but informative.
-4. Use the available search tools to understand the codebase and the user's query. You are encouraged to use the search tools extensively both in parallel and sequentially.
-5. You are encouraged to use MCP tools when needed to find information or solutions to a task or problem. You should always use these tools when the task at hand involves a specific implementation detail that may need clarification or when you need to find more information to find a solution to a request or problem. You should also use these tools as needed to ensure your information is up to date and accurate and look to documentation files on web for help when appropriate.  
+### Dual-Layer System
 
-## Personal Info
-- **Name:** Pink Pixel
-- **Website:** [pinkpixel.dev](https://pinkpixel.dev)
-- **GitHub:** [github.com/pinkpixel-dev](https://github.com/pinkpixel-dev)
-- **Discord:** @sizzlebop 
-- **Email:** admin@pinkpixel.dev
-- **Buy me a coffee:** [buy me a coffee](https://www.buymeacoffee.com/pinkpixel)
+1. **Pixel Layer** (`pixels` state): 2D array `pixels[y][x] = { r, g, b, a } | null`
+   - Rendered via `renderPixelsToCanvas()` in `utils/canvas.js`
+   - Disable image smoothing: `ctx.imageSmoothingEnabled = false`
+2. **Overlay Layer** (`overlayPaths` state): Array of `{ id, points: [{x, y}], color, width }`
+   - Rendered with Canvas API strokes with round caps/joins
+   - Keep image smoothing enabled for anti-aliasing
 
-## Branding & Identification
-- **Emoji:** ✨
-- **Tagline:** "Dream it, Pixel it”
-- **Signature:** “Made with ❤️ by Pink Pixel”
-- **Modern & Stylized Approach:**
-- Always provide modern, elegant, and stylized solutions.
-- Avoid basic or outdated implementations, even for simple tasks.
-- Ensure code, design, and UI/UX examples reflect contemporary best practices and thoughtful details
+### Coordinate Systems
+
+- **Grid coordinates**: Integer positions `(x, y)` from `(0, 0)` to `(gridW-1, gridH-1)`
+- **Screen coordinates**: Convert via `getGridPos(e)` using `getBoundingClientRect()`
+- **Display scale**: `renderScale` auto-fits canvas to viewport, `scale` is user preference (4x-40x)
+
+### Drawing Flow
+
+```
+PointerDown → Push history → Begin drawing
+PointerMove → Update tempPreview (shapes) or apply pixels (freehand)
+PointerUp   → Commit final shape → Clear preview
+```
+
+## Code Conventions
+
+### Component Structure
+
+- Use **functional components** with hooks throughout
+- Pass props explicitly (no context providers)
+- Forward canvas refs via `React.forwardRef`
+
+### State Updates Pattern
+
+```javascript
+// ✅ Correct - immutable update
+setPixels((prev) => {
+  const copy = deepCopyPixels(prev);
+  copy[y][x] = newValue;
+  return copy;
+});
+
+// ❌ Wrong - mutates state
+pixels[y][x] = newValue;
+setPixels(pixels);
+```
+
+### Utility Functions
+
+- Write pure functions with defensive checks
+- Validate inputs with `toInt()`, `validXY()` from `utils/helpers.js`
+- Return empty arrays on invalid input (never throw exceptions)
+- Use null-safe operators (`?.`, `??`) for optional chains
+
+### Styling
+
+- Use **Tailwind CSS 4.x** for all styling (utility-first approach)
+- Follow existing glassmorphism patterns with `backdrop-blur`
+- Use emoji in button labels for visual clarity
+- Support dark/light mode with theme-aware colors
+- Light theme uses warm cream gradient (`#f6f1e5` to `#f1ebe0`)
+- Dark theme uses slate gradient (`slate-900` to `slate-800`)
+
+### Canvas Rendering
+
+- Always clear before redraw: `ctx.clearRect(0, 0, w, h)`
+- Use OffscreenCanvas when available for better performance
+
+## Development Workflow
+
+### Commands
+
+```bash
+npm install          # Install dependencies
+npm run dev          # Start dev server at http://localhost:1234 (auto-opens)
+npm run build        # Build production bundle to dist/
+npm run preview      # Preview production build
+```
+
+### Adding New Tools
+
+1. Add tool definition to `tools` array in `App.jsx`
+2. Handle in `handlePointerDown/Move/Up` switch statements
+3. Create rasterization function in `utils/rasterizers.js` if needed
+4. Update temp preview logic in `Canvas.jsx` for shapes using preview
+
+### Rasterization
+
+All shapes convert to `[x, y]` coordinate arrays in `utils/rasterizers.js`:
+
+- **Line**: Bresenham's algorithm (`rasterLine`)
+- **Circle**: Midpoint circle algorithm (`rasterCircle`)
+- **Rectangle**: `rasterRect` (outline) or `fillRect` (filled)
+- **Curve**: 200-step parametric Bezier (`rasterQuad`)
+
+## File Structure & Responsibilities
+
+- **`src/App.jsx`**: Main state container, event handlers, history, export logic
+- **`src/components/Canvas.jsx`**: Dual-canvas rendering, grid overlay, pointer events
+- **`src/components/ToolPanel.jsx`**: Tool selection UI, color picker, zoom/grid controls
+- **`src/components/ColorWheel.jsx`**: HSV color picker with click-to-select
+- **`src/components/ProjectPanel.jsx`**: Save/load/export interface
+- **`src/components/Header.jsx`**: App branding, dark/light mode toggle
+- **`src/components/Footer.jsx`**: Pink Pixel branding footer
+- **`src/utils/rasterizers.js`**: Shape-to-pixel algorithms
+- **`src/utils/canvas.js`**: Low-level canvas rendering helpers
+- **`src/utils/colors.js`**: Color space conversions, color wheel rendering
+- **`src/utils/helpers.js`**: Generic utilities, validation, deep copy
+
+## Important Patterns
+
+### Color Management
+
+- Use utilities from `utils/colors.js`:
+  - `hexToRGBA(hex, alpha)` → `{ r, g, b, a }`
+  - `rgbaToHex({ r, g, b })` → `"#rrggbb"`
+  - `hsvToRgb(h, s, v)` → `{ r, g, b }`
+
+### Project Persistence
+
+- LocalStorage namespace: `gumdrop:projects`
+- Schema: `{ id, name, updated, gridW, gridH, pixels, overlayPaths }`
+- Use `listProjects()`, `saveProject()`, `loadProject()`, `deleteProject()`
+
+### Performance
+
+- Pixel operations are O(n) where n = gridW × gridH
+- Deep copying entire pixel array is acceptable for small canvases (≤128×128)
+- Practical canvas limit: ~256×256 pixels
+- Consider dirty rectangle tracking for larger canvases
+- Overlay paths render independently—no pixel overhead
+
+## Export Formats
+
+- **PNG**: Transparent/opaque background for web graphics, sprites
+- **JPG**: Opaque background, smaller file size for photos
+- **SVG**: Pixels as `<rect>`, paths as `<polyline>` for scalable graphics
+- **JSON**: Complete state data for backup/sharing/re-editing
+- **HTML**: Self-contained canvas renderer for embeddable demos
+
+## Testing & Quality
+
+- Ensure all changes maintain immutable state patterns
+- Test tool interactions with pointer events
+- Verify canvas rendering for both pixel and overlay layers
+- Test export functionality across all formats
+- Validate color conversions and transparency handling
+- Check dark/light mode appearance for all UI changes
+
+## Branding
+
+- **Signature**: "Made with 💗 by Pink Pixel"
+- **Color theme**: Pink (`#ff66cc`) + Purple + Indigo
+- **Tagline**: "Dream it, Pixel it ✨"
+- Maintain friendly, delightful tone in UI text
