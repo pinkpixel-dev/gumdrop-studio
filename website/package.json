@@ -1,0 +1,21 @@
+{
+  "name": "gumdrop-studio-website",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "npm run build && wrangler pages deploy dist",
+    "deploy:production": "npm run build && wrangler pages deploy dist --branch=main"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.32.0",
+    "astro": "^5.5.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.65.0"
+  }
+}

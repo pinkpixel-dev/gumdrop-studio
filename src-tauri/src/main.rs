@@ -76,13 +76,14 @@ fn main() {
             
             // Help menu
             let about_item = MenuItem::with_id(app, "about", "About Gumdrop Studio", true, None::<&str>)?;
+            let docs_item = MenuItem::with_id(app, "docs", "Documentation", true, None::<&str>)?;
             let website_item = MenuItem::with_id(app, "website", "Visit Website", true, None::<&str>)?;
             
             let help_menu = Submenu::with_items(
                 app,
                 "Help",
                 true,
-                &[&about_item, &website_item],
+                &[&about_item, &docs_item, &website_item],
             )?;
             
             // Build and set menu
@@ -120,6 +121,10 @@ fn main() {
                     "website" => {
                         use tauri_plugin_opener::OpenerExt;
                         let _ = app.opener().open_url("https://pinkpixel.dev", None::<&str>);
+                    }
+                    "docs" => {
+                        use tauri_plugin_opener::OpenerExt;
+                        let _ = app.opener().open_url("https://docs.gumdropstudio.app", None::<&str>);
                     }
                     _ => {}
                 }

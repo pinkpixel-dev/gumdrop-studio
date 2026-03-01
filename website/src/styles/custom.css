@@ -1,0 +1,52 @@
+/* ============================================
+   Pink Pixel brand theming for Gumdrop Studio
+   ============================================ */
+
+/* Light mode accent */
+:root[data-theme='light'] {
+  --sl-color-accent-low:  #f7d0f0;
+  --sl-color-accent:      #cc44aa;
+  --sl-color-accent-high: #891170;
+  --sl-color-text-accent: #aa2299;
+}
+
+/* Dark mode accent */
+:root[data-theme='dark'] {
+  --sl-color-accent-low:  #4d0048;
+  --sl-color-accent:      #d455bb;
+  --sl-color-accent-high: #f9aaee;
+  --sl-color-text-accent: #f9aaee;
+}
+
+/* Logo float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+/* Site title logo — bigger + floaty */
+.site-title img {
+  height: 52px !important;
+  width: auto;
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.site-title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Hero primary action button — pink gradient */
+.hero .action.primary {
+  background: linear-gradient(135deg, #cc44aa 0%, #8844cc 100%);
+  border-color: transparent;
+  color: #fff;
+}
+.hero .action.primary:hover {
+  background: linear-gradient(135deg, #dd55bb 0%, #9955dd 100%);
+}
+
+/* Footer signature */
+.footer-attribution {
+  color: var(--sl-color-text-accent);
+}

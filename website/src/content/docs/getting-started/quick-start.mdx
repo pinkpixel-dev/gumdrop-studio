@@ -1,0 +1,66 @@
+---
+title: Quick Start
+description: Get up and running with Gumdrop Studio in minutes.
+sidebar:
+  order: 2
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+This guide walks you through your first drawing session. It takes about 5 minutes.
+
+## The Interface
+
+When you open Gumdrop Studio you'll see three panels:
+
+| Panel             | Location | Purpose                                   |
+| ----------------- | -------- | ----------------------------------------- |
+| **Tool Panel**    | Left     | Select tools, pick color, set zoom & grid |
+| **Canvas**        | Center   | Your drawing area                         |
+| **Project Panel** | Right    | Save, load, and export projects           |
+
+## Your First Drawing
+
+<Steps>
+
+1. **Set your canvas size**
+
+   In the **Project Panel** on the right, set the canvas dimensions before you start. Try **32×32** for a classic sprite or **64×64** for a character. The default is 40×40.
+
+2. **Pick a color**
+
+   Click anywhere on the **color wheel** in the Tool Panel to set your active color. You can also type a hex code directly (e.g. `#ff66cc` for hot pink).
+
+3. **Select a tool**
+
+   Click **Pencil 🖊️** in the tool list for freehand drawing, or **Pixel Stamp ⬛** for precise single-pixel placement one cell at a time.
+
+4. **Draw on the canvas**
+
+   Click or click-and-drag on the canvas to place pixels. Use the **zoom slider** to zoom in for precision work.
+
+5. **Add fine details with the Accent Pen**
+
+   Switch to **Accent Pen ✨** and set the width to 1–2px. This draws smooth anti-aliased lines on the **overlay layer** — perfect for whiskers, eyelashes, or highlights.
+
+6. **Undo if you make a mistake**
+
+   Click the **↩ Undo** button (or `Ctrl+Z` on desktop). You have unlimited undo steps.
+
+7. **Save your project**
+
+   Click **Save** in the Project Panel, give your project a name, and it's stored automatically.
+
+8. **Export your art**
+
+   Click **Export** and choose **PNG** for the best-quality transparent image — ready for game engines, web use, or printing.
+
+</Steps>
+
+## Key Tips
+
+- **Grid toggle**: Click the grid button in the Tool Panel to show/hide the pixel grid — very helpful for alignment
+- **Filled shapes**: Enable the **Fill** toggle before drawing a rectangle to make it solid
+- **Curve tool**: Click 3 times — start point → control (pull) point → end point
+- **Overlay vs pixels**: Accent Pen strokes live on a separate layer from pixels. Eraser only affects pixels
+- **Zoom**: Use the slider (4x–40x), or `+` / `-` keys on the desktop app

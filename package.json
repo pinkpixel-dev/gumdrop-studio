@@ -1,5 +1,5 @@
 {
-  "name": "gumdrop-studio",
+  "name": "@pinkpixel/gumdrop-studio",
   "version": "1.1.0",
   "type": "module",
   "scripts": {

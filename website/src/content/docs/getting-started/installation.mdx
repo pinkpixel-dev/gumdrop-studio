@@ -1,0 +1,133 @@
+---
+title: Installation
+description: How to get Gumdrop Studio — web app, AppImage, .deb package, or build from source.
+sidebar:
+  order: 1
+---
+
+Gumdrop Studio is available three ways: the **web app** (no install needed), the **Linux desktop app** (AppImage or .deb), or you can **build from source**.
+
+---
+
+## Web App
+
+The fastest way to start creating — just open your browser:
+
+**[➜ Open gumdropstudio.app](https://gumdropstudio.app/)**
+
+Works in any modern browser (Chrome, Firefox, Safari, Edge). Your projects are automatically saved in your browser's local storage — nothing to install, no account required.
+
+---
+
+## Linux Desktop App
+
+The desktop version wraps the full app in a native window and adds:
+
+- System menu bar with **File, Edit, View, Help** menus
+- **Keyboard shortcuts** (Ctrl+N, Ctrl+S, Ctrl+Z, and more)
+- Native file system and dialog access
+- Runs offline — no browser required
+
+### Download
+
+import { LinkButton, CardGrid, Card } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="AppImage" icon="linux">
+    Portable — runs on any Linux distro, no install needed.
+
+    <LinkButton href="https://pub-3dc2bccbac004e138e416250e3db8252.r2.dev/Gumdrop%20Studio_1.1.0.AppImage" icon="external" variant="primary">
+      Download AppImage (v1.1.0)
+    </LinkButton>
+
+  </Card>
+  <Card title="Debian Package" icon="linux">
+    For Ubuntu, Debian, Linux Mint, Pop!\_OS and compatible distros.
+
+    <LinkButton href="https://pub-3dc2bccbac004e138e416250e3db8252.r2.dev/Gumdrop%20Studio_1.1.0_amd64.deb" icon="external" variant="secondary">
+      Download .deb (v1.1.0)
+    </LinkButton>
+
+  </Card>
+</CardGrid>
+
+Two installer formats are available:
+
+---
+
+### AppImage (Any Linux Distro)
+
+AppImages are portable — they run on any Linux distribution without installation. No root access required.
+
+```bash
+# 1. Download the AppImage from the releases page, then make it executable:
+chmod +x "Gumdrop Studio_1.1.0_amd64.AppImage"
+
+# 2. Run it:
+./"Gumdrop Studio_1.1.0_amd64.AppImage"
+```
+
+:::tip
+You can also right-click the file in your file manager → **Properties** → **Permissions** → tick "Allow executing as program", then double-click to launch.
+:::
+
+---
+
+### Debian Package (.deb)
+
+For **Debian, Ubuntu, Linux Mint, Pop!\_OS**, and compatible distributions.
+
+```bash
+# Install:
+sudo dpkg -i "Gumdrop Studio_1.1.0_amd64.deb"
+
+# Uninstall:
+sudo dpkg -r gumdrop-studio
+```
+
+After installation, launch **Gumdrop Studio** from your application menu, or run `gumdrop-studio` in a terminal.
+
+---
+
+## Build from Source
+
+For developers who want to contribute or build the very latest code.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 18 or higher
+- [Rust](https://rustup.rs/) (stable toolchain)
+- Linux system libraries:
+
+```bash
+# Arch Linux
+sudo pacman -S webkit2gtk-4.1 libappindicator-gtk3 librsvg
+
+# Ubuntu / Debian
+sudo apt install libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+```
+
+### Clone & Run
+
+```bash
+git clone https://github.com/pinkpixel-dev/gumdrop-studio
+cd gumdrop-studio
+npm install
+
+# Run in desktop dev mode:
+npm run tauri:dev
+
+# Or run in the browser:
+npm run dev
+```
+
+### Build Desktop Installers
+
+```bash
+npm run tauri:build
+```
+
+Output files in `src-tauri/target/release/bundle/`:
+
+- `appimage/` — portable AppImage
+- `deb/` — Debian package

@@ -1,0 +1,79 @@
+---
+title: Exporting Your Art
+description: All five export formats in Gumdrop Studio — PNG, JPG, SVG, JSON, and HTML.
+---
+
+Click **Export** in the **Project Panel** to open the export options. Both canvas layers (pixels and overlay) are composited together in all formats.
+
+---
+
+## Format Overview
+
+| Format   | Transparency | Scalable | Re-editable | Best for                        |
+| -------- | :----------: | :------: | :---------: | ------------------------------- |
+| **PNG**  |      ✅      |    ❌    |     ❌      | Sprites, web graphics, stickers |
+| **JPG**  |      ❌      |    ❌    |     ❌      | Backgrounds, thumbnails         |
+| **SVG**  |      ✅      |    ✅    |     ✅      | Logos, scalable art             |
+| **JSON** |      ✅      |    —     |     ✅      | Backup, transfer, re-editing    |
+| **HTML** |      ✅      |    ✅    |     ❌      | Embeds, portfolios, demos       |
+
+---
+
+## PNG 🖼️
+
+The most versatile format for pixel art.
+
+- **Transparent background** — each pixel retains its alpha value, giving you a cutout image with no background. Perfect for game sprites, web graphics, and stickers.
+- **Opaque background** — choose a background color to fill transparent areas. Good for social media posts and thumbnails where transparency would show as a checkerboard.
+- Exported at the native canvas resolution (e.g. 32×32px). Scale up in your image editor or game engine.
+
+:::tip
+Most game engines (Godot, Unity, Pygame, etc.) import transparent PNG sprites natively. Always use transparent PNG for game assets.
+:::
+
+---
+
+## JPG 📷
+
+- Always has an **opaque background** (JPG does not support transparency)
+- Smaller file size than PNG due to lossy compression
+- Best for photo-style artwork, backgrounds, or when file size matters more than perfect quality
+
+---
+
+## SVG 🎨
+
+Exports a fully scalable vector representation of your artwork:
+
+- **Pixels** → individual `<rect>` elements (one per non-transparent cell)
+- **Overlay paths** → `<polyline>` elements
+
+The exported SVG scales to any resolution without blurring — great for logos, icons, or artwork intended for print. SVG files can be opened and edited in Inkscape, Figma, Adobe Illustrator, or any SVG editor.
+
+---
+
+## JSON 📦
+
+Exports the complete project state as a structured JSON file containing:
+
+- Canvas dimensions
+- All pixel data (RGBA values for every cell)
+- All overlay paths (points, color, width)
+
+Use JSON to:
+
+- **Back up** important artwork
+- **Transfer** projects between browsers or devices
+- **Re-edit** artwork later by importing back into Gumdrop Studio
+
+---
+
+## HTML 🌐
+
+Exports a **self-contained HTML file** with an embedded `<canvas>` renderer. The file:
+
+- Renders your pixel art in-browser using the Canvas 2D API
+- Has zero external dependencies — everything is inline in a single `.html` file
+- Scales cleanly with the browser window
+
+Open it directly in any browser, share it as a standalone file, or drop the `<canvas>` snippet into your own web page or portfolio.

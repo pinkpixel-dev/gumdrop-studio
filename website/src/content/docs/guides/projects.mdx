@@ -1,0 +1,80 @@
+---
+title: Projects
+description: How to save, load, duplicate, and manage your Gumdrop Studio projects.
+---
+
+## Saving a Project
+
+Click **Save** in the **Project Panel** (right side of the app). If it's a new untitled project, you'll be prompted to give it a name.
+
+Your project is stored immediately after saving.
+
+---
+
+## Loading a Project
+
+The Project Panel shows a scrollable list of all your saved projects. Click any project name to load it onto the canvas.
+
+:::caution
+Loading a project replaces the current canvas. Make sure you've saved your work first!
+:::
+
+---
+
+## New Project
+
+Click **New** in the Project Panel to start a fresh canvas. You'll be asked to confirm — your current unsaved work will be discarded.
+
+---
+
+## Duplicating a Project
+
+Click the **duplicate icon** next to any project in the list to create an exact copy under a new name. Useful for creating variants of the same artwork.
+
+---
+
+## Deleting a Project
+
+Click the **delete icon (🗑️)** next to a project in the list to permanently remove it.
+
+:::danger
+Project deletion is permanent. There is no recycle bin.
+:::
+
+---
+
+## Where Projects Are Stored
+
+| Platform              | Storage location                                      |
+| --------------------- | ----------------------------------------------------- |
+| **Browser (web app)** | `localStorage` under the namespace `gumdrop:projects` |
+| **Desktop (Tauri)**   | App data directory via the native Tauri store plugin  |
+
+### Data Format
+
+Each project is stored as a JSON object:
+
+```json
+{
+  "id": "abc123def",
+  "name": "My Pixel Cat",
+  "updated": 1740000000000,
+  "gridW": 32,
+  "gridH": 32,
+  "pixels": [[...]],
+  "overlayPaths": [
+    { "id": "path_1", "points": [{"x": 5, "y": 5}, ...], "color": "#ff66cc", "width": 2 }
+  ]
+}
+```
+
+---
+
+## Transferring Projects Between Devices
+
+To move a project to a different browser or device:
+
+1. **Export as JSON** — click Export → JSON. This saves a `.json` file with the complete project state including all pixels and overlay paths.
+2. On the new device, click **Import** in the Project Panel and select your `.json` file.
+
+This is also a great way to back up important artwork.
