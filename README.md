@@ -41,10 +41,10 @@ npm i -g @pinkpixel/gumdrop-studio@latest
 
 Download the latest release from [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest):
 
-| Package | Description | Size |
-| ------- | ----------- | ---- |
+| Package                                                                                                                         | Description                         | Size    |
+| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
 | [**AppImage** 📦](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage) | Portable — runs on any Linux distro | ~108 MB |
-| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb) | Debian / Ubuntu installer | ~8.5 MB |
+| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb)          | Debian / Ubuntu installer           | ~8.5 MB |
 
 ```bash
 # AppImage — make executable and run

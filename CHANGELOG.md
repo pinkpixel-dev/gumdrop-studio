@@ -5,12 +5,14 @@ All notable changes to **Gumdrop Studio** are documented here.
 ## 2026-03-01 — v1.1.0
 
 ### 🌐 Links
+
 - **Web App:** https://gumdropstudio.app
 - **Docs:** https://docs.gumdropstudio.app
 - **GitHub Release:** https://github.com/pinkpixel-dev/gumdrop-studio/releases/tag/v1.1.0
 - **npm:** `npm i -g @pinkpixel/gumdrop-studio@latest`
 
 ### Changes
+
 - Added **Tauri 2 desktop app** — Gumdrop Studio now ships as a native desktop application
 - Native app menu (File, Edit, View, Help) with keyboard shortcuts (Ctrl+N, Ctrl+S, Ctrl+Z, Ctrl+G, etc.)
 - Export submenu in desktop menu bar for all five formats (PNG, JPG, SVG, JSON, HTML)

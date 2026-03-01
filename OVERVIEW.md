@@ -512,6 +512,7 @@ setPixels(pixels);
 ---
 
 ## 🔗 Links
+
 - **Web App:** [gumdropstudio.app](https://gumdropstudio.app)
 - **Docs:** [docs.gumdropstudio.app](https://docs.gumdropstudio.app)
 - **Releases:** [github.com/pinkpixel-dev/gumdrop-studio/releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases)
