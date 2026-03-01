@@ -9,6 +9,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             // Create menu items
             let new_item = MenuItem::with_id(app, "new", "New", true, Some("Ctrl+N"))?;
@@ -117,8 +118,8 @@ fn main() {
                             .blocking_show();
                     }
                     "website" => {
-                        use tauri_plugin_shell::ShellExt;
-                        let _ = app.shell().open("https://pinkpixel.dev", None);
+                        use tauri_plugin_opener::OpenerExt;
+                        let _ = app.opener().open_url("https://pinkpixel.dev", None::<&str>);
                     }
                     _ => {}
                 }
