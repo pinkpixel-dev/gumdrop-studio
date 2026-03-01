@@ -3,6 +3,10 @@
 **Last Updated:** March 1, 2026  
 **Version:** 1.1.0  
 **Status:** Production Ready ✨  
+**Web App:** [gumdropstudio.app](https://gumdropstudio.app)  
+**Docs:** [docs.gumdropstudio.app](https://docs.gumdropstudio.app)  
+**npm:** [`@pinkpixel/gumdrop-studio`](https://www.npmjs.com/package/@pinkpixel/gumdrop-studio)  
+**Releases:** [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest)  
 **Deployment:** Cloudflare Pages (browser) + Tauri 2 (desktop)
 
 ---
@@ -508,8 +512,10 @@ setPixels(pixels);
 ---
 
 ## 🔗 Links
-
-- **Author:** Pink Pixel
+- **Web App:** [gumdropstudio.app](https://gumdropstudio.app)
+- **Docs:** [docs.gumdropstudio.app](https://docs.gumdropstudio.app)
+- **Releases:** [github.com/pinkpixel-dev/gumdrop-studio/releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases)
+- **npm:** [npmjs.com/package/@pinkpixel/gumdrop-studio](https://www.npmjs.com/package/@pinkpixel/gumdrop-studio)- **Author:** Pink Pixel
 - **Website:** [pinkpixel.dev](https://pinkpixel.dev)
 - **GitHub:** [github.com/pinkpixel-dev](https://github.com/pinkpixel-dev)
 - **Contact:** admin@pinkpixel.dev

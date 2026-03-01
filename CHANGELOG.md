@@ -4,6 +4,13 @@ All notable changes to **Gumdrop Studio** are documented here.
 
 ## 2026-03-01 — v1.1.0
 
+### 🌐 Links
+- **Web App:** https://gumdropstudio.app
+- **Docs:** https://docs.gumdropstudio.app
+- **GitHub Release:** https://github.com/pinkpixel-dev/gumdrop-studio/releases/tag/v1.1.0
+- **npm:** `npm i -g @pinkpixel/gumdrop-studio@latest`
+
+### Changes
 - Added **Tauri 2 desktop app** — Gumdrop Studio now ships as a native desktop application
 - Native app menu (File, Edit, View, Help) with keyboard shortcuts (Ctrl+N, Ctrl+S, Ctrl+Z, Ctrl+G, etc.)
 - Export submenu in desktop menu bar for all five formats (PNG, JPG, SVG, JSON, HTML)
@@ -12,6 +19,8 @@ All notable changes to **Gumdrop Studio** are documented here.
 - Added `src/utils/storage.js` for unified project persistence (localStorage / Tauri store)
 - Added `npm run tauri:dev` and `npm run tauri:build` scripts
 - Desktop build outputs AppImage + .deb installers to `src-tauri/target/release/bundle/`
+- Published Linux installers to [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/tag/v1.1.0)
+- Published npm package as [`@pinkpixel/gumdrop-studio`](https://www.npmjs.com/package/@pinkpixel/gumdrop-studio)
 - Fixed invalid JSON and stray code blocks in `tauri.conf.json` and `Cargo.toml`
 - Fixed `split-debuginfo` placeholder values in `Cargo.toml`
 - Fixed AppImage bundling on modern systems with `NO_STRIP=YES` (old linuxdeploy strip incompatibility)

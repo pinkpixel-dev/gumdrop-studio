@@ -12,13 +12,48 @@
 [![Vite](https://img.shields.io/badge/Vite-7.3.1-646cff?style=flat&logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.18-06b6d4?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 [![Tauri](https://img.shields.io/badge/Tauri-2.x-ffc131?style=flat&logo=tauri)](https://tauri.app/)
+[![npm](https://img.shields.io/badge/npm-@pinkpixel%2Fgumdrop--studio-cb3837?style=flat&logo=npm)](https://www.npmjs.com/package/@pinkpixel/gumdrop-studio)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 _Create adorable pixel art with a unique dual-layer canvas system!_
 
-[Features](#-features) • [Getting Started](#-getting-started) • [Desktop App](#-desktop-app-tauri) • [Usage](#-usage) • [Export](#-export-options) • [Tech Stack](#%EF%B8%8F-tech-stack)
+[🌐 Web App](https://gumdropstudio.app) • [📚 Docs](https://docs.gumdropstudio.app) • [⬇️ Download](#-download) • [Features](#-features) • [Getting Started](#-getting-started) • [Desktop App](#%EF%B8%8F-desktop-app-tauri) • [Usage](#-usage) • [Export](#-export-options)
 
 </div>
+
+---
+
+## ⬇️ Download
+
+### 🌐 Web App (No Install)
+
+Use Gumdrop Studio instantly in your browser — no download required:
+
+**➡️ [gumdropstudio.app](https://gumdropstudio.app)**
+
+### 📦 npm (CLI / Embed)
+
+```bash
+npm i -g @pinkpixel/gumdrop-studio@latest
+```
+
+### 🖥️ Desktop Installers (Linux)
+
+Download the latest release from [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest):
+
+| Package | Description | Size |
+| ------- | ----------- | ---- |
+| [**AppImage** 📦](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage) | Portable — runs on any Linux distro | ~108 MB |
+| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb) | Debian / Ubuntu installer | ~8.5 MB |
+
+```bash
+# AppImage — make executable and run
+chmod +x "Gumdrop Studio_1.1.0_amd64.AppImage"
+./"Gumdrop Studio_1.1.0_amd64.AppImage"
+
+# .deb — install system-wide
+sudo dpkg -i "Gumdrop Studio_1.1.0_amd64.deb"
+```
 
 ---
 
@@ -253,6 +288,7 @@ _All dependencies are **latest stable versions** as of March 2026._
 
 ## 📚 Documentation
 
+- **[docs.gumdropstudio.app](https://docs.gumdropstudio.app)** - Full online documentation
 - **[OVERVIEW.md](OVERVIEW.md)** - Comprehensive technical documentation
 - **[SETUP.md](SETUP.md)** - Quick setup guide
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates

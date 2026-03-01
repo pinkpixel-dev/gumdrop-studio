@@ -1,6 +1,11 @@
 # Gumdrop Studio — GitHub Copilot Instructions
 
-Gumdrop Studio is a React 19 pixel art creation app with a dual-layer canvas system (pixel + vector overlay). It ships both as a browser app (Cloudflare Pages) and a native desktop app (Tauri 2 / Linux AppImage + .deb).
+Gumdrop Studio is a React 19 pixel art creation app with a dual-layer canvas system (pixel + vector overlay). It ships as a browser app (Cloudflare Pages), an npm package, and a native desktop app (Tauri 2 / Linux AppImage + .deb).
+
+- **Web App:** https://gumdropstudio.app
+- **Docs:** https://docs.gumdropstudio.app
+- **npm:** `npm i -g @pinkpixel/gumdrop-studio@latest`
+- **GitHub Releases:** https://github.com/pinkpixel-dev/gumdrop-studio/releases
 
 ---
 
