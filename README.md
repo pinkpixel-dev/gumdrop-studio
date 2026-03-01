@@ -37,21 +37,25 @@ Use Gumdrop Studio instantly in your browser — no download required:
 npm i -g @pinkpixel/gumdrop-studio@latest
 ```
 
-### 🖥️ Desktop Installers (Linux)
+### 🖥️ Desktop Installers
 
 Download the latest release from [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest):
 
-| Package                                                                                                                         | Description                         | Size    |
-| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
-| [**AppImage** 📦](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage) | Portable — runs on any Linux distro | ~108 MB |
-| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb)          | Debian / Ubuntu installer           | ~8.5 MB |
+| Package | Platform | Description | Size |
+| ------- | -------- | ----------- | ---- |
+| [**Windows Installer** 🪟](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_x64-setup.exe) | Windows 10/11 | NSIS setup wizard | ~5 MB |
+| [**AppImage** 🐧](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.AppImage) | Linux (portable) | Runs on any Linux distro | ~108 MB |
+| [**.deb** 📥](https://github.com/pinkpixel-dev/gumdrop-studio/releases/download/v1.1.0/Gumdrop.Studio_1.1.0_amd64.deb) | Debian / Ubuntu | System installer | ~8.5 MB |
 
 ```bash
-# AppImage — make executable and run
+# Windows — run the setup wizard
+"Gumdrop Studio_1.1.0_x64-setup.exe"
+
+# Linux AppImage — make executable and run
 chmod +x "Gumdrop Studio_1.1.0_amd64.AppImage"
 ./"Gumdrop Studio_1.1.0_amd64.AppImage"
 
-# .deb — install system-wide
+# Linux .deb — install system-wide
 sudo dpkg -i "Gumdrop Studio_1.1.0_amd64.deb"
 ```
 
@@ -153,6 +157,7 @@ Gumdrop Studio ships as a full **native desktop app** powered by [Tauri 2](https
 
 - **Native window** with full app menu (File, Edit, View, Help)
 - **Keyboard shortcuts** wired through the OS menu (Ctrl+N, Ctrl+S, Ctrl+Z, etc.)
+- **Windows NSIS installer** (.exe setup wizard)
 - **AppImage & .deb installers** for Linux
 - **File system & dialog access** via Tauri plugins
 

@@ -21,7 +21,9 @@ All notable changes to **Gumdrop Studio** are documented here.
 - Added `src/utils/storage.js` for unified project persistence (localStorage / Tauri store)
 - Added `npm run tauri:dev` and `npm run tauri:build` scripts
 - Desktop build outputs AppImage + .deb installers to `src-tauri/target/release/bundle/`
+- Added Windows NSIS installer (.exe) built via GitHub Actions on Windows runner
 - Published Linux installers to [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/tag/v1.1.0)
+- Added `.github/workflows/release.yml` — auto-builds Windows/Linux installers on tag push
 - Published npm package as [`@pinkpixel/gumdrop-studio`](https://www.npmjs.com/package/@pinkpixel/gumdrop-studio)
 - Fixed invalid JSON and stray code blocks in `tauri.conf.json` and `Cargo.toml`
 - Fixed `split-debuginfo` placeholder values in `Cargo.toml`

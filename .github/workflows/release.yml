@@ -1,0 +1,111 @@
+name: Build & Release
+
+on:
+  # Runs automatically when a version tag is pushed: git tag v1.2.0 && git push --tags
+  push:
+    tags:
+      - 'v*'
+  # Also allows manual triggering — useful for adding builds to an existing release
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to upload to (e.g. v1.1.0)'
+        required: true
+        default: 'v1.1.0'
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Windows — NSIS installer (.exe)
+  # ─────────────────────────────────────────────
+  build-windows:
+    name: Windows Installer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build Tauri (NSIS)
+        run: npx tauri build --bundles nsis
+
+      - name: Upload NSIS installer to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $tag = if ("${{ github.event_name }}" -eq "workflow_dispatch") { "${{ github.event.inputs.tag }}" } else { "${{ github.ref_name }}" }
+          $installer = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*-setup.exe" | Select-Object -First 1
+          if (-not $installer) {
+            $installer = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
+          }
+          Write-Host "Uploading: $($installer.Name) to release $tag"
+          gh release upload $tag "$($installer.FullName)" --clobber
+
+  # ─────────────────────────────────────────────
+  # Linux — AppImage + .deb
+  # ─────────────────────────────────────────────
+  build-linux:
+    name: Linux Installers
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libgtk-3-dev \
+            libglib2.0-dev
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build Tauri (AppImage + deb)
+        env:
+          NO_STRIP: 'YES'
+        run: npx tauri build --bundles appimage,deb
+
+      - name: Upload Linux installers to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          APPIMAGE=$(find src-tauri/target/release/bundle/appimage -name "*.AppImage" | head -1)
+          DEB=$(find src-tauri/target/release/bundle/deb -name "*.deb" | head -1)
+          echo "Uploading $APPIMAGE and $DEB to release $TAG"
+          gh release upload "$TAG" "$APPIMAGE" "$DEB" --clobber

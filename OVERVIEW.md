@@ -348,8 +348,11 @@ npm run tauri:build
 
 Output: `src-tauri/target/release/bundle/`
 
+- `nsis/` — Windows NSIS installer (.exe)
 - `appimage/` — portable AppImage
 - `deb/` — Debian/Ubuntu package
+
+> **Windows:** Built automatically via GitHub Actions (`.github/workflows/release.yml`) on a Windows runner. Download from [GitHub Releases](https://github.com/pinkpixel-dev/gumdrop-studio/releases/latest) or [docs.gumdropstudio.app](https://docs.gumdropstudio.app).
 
 ### Preview Production Build
 
