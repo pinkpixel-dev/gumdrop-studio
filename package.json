@@ -28,6 +28,6 @@
     "baseline-browser-mapping": "^2.9.19",
     "tailwindcss": "^4.1.18",
     "vite": "^7.3.1",
-    "wrangler": "^4.65.0"
+    "wrangler": "^4.75.0"
   }
 }
