@@ -109,6 +109,8 @@ The **best feature** of Gumdrop Studio! Draw blocky pixel art on one layer, then
 
 ## 🚀 Getting Started
 
+[![Launch on PicoRunner](https://picorunner.com/badges/launch.svg)](https://picorunner.com/launch/?repository=https%3A%2F%2Fgithub.com%2Fpinkpixel-dev%2Fgumdrop-studio)
+
 ### Prerequisites
 
 - **Node.js** 18+
